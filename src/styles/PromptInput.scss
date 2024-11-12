@@ -1,0 +1,31 @@
+// PromptInput.scss
+@import 'variables';
+
+.prompt-input {
+  display: flex;
+  gap: $padding-small;
+  margin-top: auto;
+
+  .input-field {
+    flex: 1;
+    padding: $padding-small;
+    border: 1px solid $secondary-color;
+    border-radius: $border-radius;
+    font-size: 14px;
+    color: $text-color;
+  }
+
+  .send-button {
+    background-color: $primary-color;
+    color: #fff;
+    padding: $padding-small $padding-medium;
+    border: none;
+    border-radius: $border-radius;
+    cursor: pointer;
+    font-size: 14px;
+    
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}
