@@ -16,21 +16,19 @@ function DateInput() {
   };
 
   const handleSubmit = async (event) => {
-    console.log('inside handle submit')
     event.preventDefault();
     try {
-      // Replace `YOUR_API_URL` with your actual API endpoint
-      const response = await axios.post('http://127.0.0.1:8000/generate_report/', {
-        start_date: dateFrom,
-        end_date: dateTo,
-      });
-      setApiResponse(response.data);
-      console.log(response); // Inspect response here
+        const response = await axios.post('http://127.0.0.1:8000/generate_report/', {
+            start_date: dateFrom,
+            end_date: dateTo,
+        });
+        setApiResponse(response.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setApiResponse('Error fetching data.');
+        console.error('Error fetching data:', error);
+        setApiResponse('Error fetching data.');
     }
-  };
+};
+  
 
   return (
     <div>
@@ -57,7 +55,7 @@ function DateInput() {
       </form>
 
       {apiResponse && (
-        <div style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px'  }}>
           <h2>API Response:</h2>
           <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
         </div>
