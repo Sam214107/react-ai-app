@@ -6,6 +6,8 @@ import PromptInput from './components/PromptInput';
 import DateInput from './components/DateInput';
 import { Container, Typography, Box, CircularProgress, Button } from '@mui/material';
 import './styles/App.scss';
+import Navbar from './components/Navbar';
+import HeroComponent from './components/HeroComponent';
 
 function App() {
   // const [messages, setMessages] = useState(() => {
@@ -72,10 +74,13 @@ function App() {
   //   </Container>
   // );
   return (
-    <div className="App">
-      <h1>Report AI</h1>
+    // <div className="App">
+    <>
+      <Navbar />
+      <HeroComponent/>
       <DateInput />
-    </div>
+    </>
+    // </div>
   );
 
 }
