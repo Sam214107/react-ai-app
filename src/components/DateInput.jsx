@@ -57,6 +57,8 @@ function DateInput() {
 
   return (
     <div className="container my-5">
+      <h1>Generate Report</h1>
+      <hr style={{ width: '100%', margin: '0 auto', border: '1px solid gray' }} />
     <div className="row">
       {/* Date Picker Column (col-4) */}
       <div className="col-12 col-md-4">

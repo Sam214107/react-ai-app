@@ -1,5 +1,5 @@
 import React from 'react';
-
+import '../styles/hero.css'
 function Navbar() {
   return (<>
     <nav className="navbar navbar-expand-lg navbar-dark " style={{ backgroundColor: 'transparent' }}>
@@ -7,7 +7,7 @@ function Navbar() {
         <div className="d-flex align-items-center  justify-content-between">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link fs-6 text-black" href="#">
+              <a className="nav-link fs-6 text-primary" href="https://console.groq.com/docs/overview">
                 Groq
               </a>
             </li>
@@ -19,7 +19,7 @@ function Navbar() {
 
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link fs-6 text-black" href="#">
+              <a className="nav-link fs-6 text-primary" href="#">
                 Llama 3.1
               </a>
             </li>
