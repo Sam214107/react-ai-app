@@ -24,6 +24,7 @@ function DateInput() {
     setPdfUrl(null);
 
     try {
+<<<<<<< HEAD
       // const response = await axios.post('http://127.0.0.1:8000/generate_report/', {
       //   start_date: dateFrom,
       //   end_date: dateTo,
@@ -47,8 +48,19 @@ function DateInput() {
       setError('Error fetching data.');
     } finally {
       setLoading(false);
+=======
+        const response = await axios.post('http://127.0.0.1:8000/generate_report/', {
+            start_date: dateFrom,
+            end_date: dateTo,
+        });
+        setApiResponse(response.data);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        setApiResponse('Error fetching data.');
+>>>>>>> bcb115c15f25e8c75fdd41c853f22987658ce826
     }
-  };
+};
+  
 
   return (
  <div className="parent-container">
@@ -100,6 +112,16 @@ function DateInput() {
   </div>
 </div>
 
+<<<<<<< HEAD
+=======
+      {apiResponse && (
+        <div style={{ marginTop: '20px'  }}>
+          <h2>API Response:</h2>
+          <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
+        </div>
+      )}
+    </div>
+>>>>>>> bcb115c15f25e8c75fdd41c853f22987658ce826
   );
 }
 
