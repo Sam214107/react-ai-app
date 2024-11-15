@@ -10,6 +10,7 @@ import Navbar from './components/Navbar';
 import HeroComponent from './components/HeroComponent';
 
 function App() {
+  
   // const [messages, setMessages] = useState(() => {
   //   const savedMessages = localStorage.getItem('chatMessages');
   //   return savedMessages ? JSON.parse(savedMessages) : [];
