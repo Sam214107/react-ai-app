@@ -92,81 +92,15 @@ function DateInput() {
     } finally {
       setLoading(false);
     }
+    console.log('test')
   };
   return (
     <div className="container my-5">
       <h1>Generate Report</h1>
       <hr
-        style={{ width: "100%", margin: "0 auto", border: "1px solid gray" }}
+        style={{ width: "100%", marginBottom: "16px", border: "1px solid gray" }}
       />
       <div className="row">
-        {/* Input questions */}
-        <div className="input-container container mt-4">
-          <div className="input-list mb-3">
-            {inputs.map((input, index) => (
-              <div
-                key={index}
-                className="alert alert-primary d-flex justify-content-between align-items-center"
-                role="alert"
-              >
-                {input}
-                <button
-                  type="button"
-                  className="btn btn-danger btn-sm"
-                  onClick={() => handleDeleteInput(index)}
-                >
-                  <FaTrash />
-                </button>
-              </div>
-            ))}
-          </div>
-          <form onSubmit={handleAddInput} className="mb-3">
-            <div className="form-group">
-              <label htmlFor="userInput" className="form-label">
-                Enter your questions:
-              </label>
-              <input
-                type="text"
-                id="userInput"
-                className="form-control"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask Question like Give me the avergae sales value from..."
-                style={{ border: "1px solid gray" }}
-              />
-            </div>
-            {inputs.length >= 5 && (
-            <div className="alert alert-warning" role="alert">
-              You have reached the maximum number of inputs.
-            </div>
-          )}
-            <button
-              type="submit"
-              className="btn btn-primary mt-2"
-              disabled={inputs.length >= 5}
-            >
-              Add Question
-            </button>
-
-            {/* questions suggestions */}
-            {suggestionQuestions.length > 0 && (
-            <div className="container text-center mt-4">
-              <h3>Suggested Questions</h3>
-              <div className="d-flex flex-wrap justify-content-center gap-3 mt-3">
-                {suggestionQuestions.map((question, index) => (
-                  <div
-                    key={index}
-                    className="bg-light rounded p-1 shadow-sm d-flex align-items-center justify-content-center"
-                    style={{ minWidth: "200px", maxWidth: "300px" }}
-                  >
-                    {question}
-                  </div>
-                ))}
-              </div>
-            </div>
-              )}
-          </form>
-        </div>
 
         {/* Date Picker Column (col-4) */}
         <div className="col-12 col-md-4">
@@ -224,8 +158,78 @@ function DateInput() {
             </div>
           </div>
         </div>
-        {/* Information Column (col-8) */}
         <div className="col-12 col-md-8 mt-4 mt-md-0">
+          <h2>Additionally, You can also add questions according to your report generation</h2>
+          {/* Input questions */}
+          <div className="input-container container mt-4">
+            <div className="input-list mb-3">
+              {inputs.map((input, index) => (
+                <div
+                  key={index}
+                  className="alert alert-primary d-flex justify-content-between align-items-center"
+                  role="alert"
+                >
+                  {input}
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDeleteInput(index)}
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <form onSubmit={handleAddInput} className="mb-3">
+              <div className="form-group">
+                <label htmlFor="userInput" className="form-label">
+                  Enter your questions:
+                </label>
+                <input
+                  type="text"
+                  id="userInput"
+                  className="form-control"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Add Question like Give me the avergae sales value from..."
+                  style={{ border: "1px solid gray" }}
+                />
+              </div>
+              {inputs.length >= 5 && (
+              <div className="alert alert-warning" role="alert">
+                You have reached the maximum number of inputs.
+              </div>
+            )}
+              <button
+                type="submit"
+                className="btn btn-primary mt-2"
+                disabled={inputs.length >= 5}
+              >
+                Add Question
+              </button>
+
+              {/* questions suggestions */}
+              {suggestionQuestions.length > 0 && (
+              <div className="container text-center mt-4">
+                <h3>Suggested Questions</h3>
+                <div className="d-flex flex-wrap justify-content-center gap-3 mt-3">
+                  {suggestionQuestions.map((question, index) => (
+                    <div
+                      key={index}
+                      className="bg-light rounded p-1 shadow-sm d-flex align-items-center justify-content-center"
+                      style={{ minWidth: "200px", maxWidth: "300px" }}
+                    >
+                      {question}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              )}
+            </form>
+          </div>
+        </div>
+        {/* Information Column (col-8) */}
+        <div className="col-12 mt-4 mt-md-0">
           {!pdfUrl && (
             <div className="card shadow-sm mb-4">
               <div className="card-header bg-secondary text-white">
@@ -277,7 +281,7 @@ function DateInput() {
                   src={pdfUrl}
                   title="PDF Viewer"
                   className="w-100 border-0"
-                  style={{ height: "600px" }}
+                  style={{width:"100%", height: "600px" }}
                 ></iframe>
               </div>
             </div>
