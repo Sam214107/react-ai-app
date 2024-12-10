@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Typewriter from 'typewriter-effect';
 import reportImage from '../report.jpg'; // Import the image file directly
 
@@ -25,6 +26,10 @@ const Hero = () => {
           <p>
             AI-powered reporting transforms raw data into clear, actionable insights. Automate your reporting process, gain accurate results quickly, and make smarter decisions with intelligent, data-driven reports tailored to your needs.
           </p>
+          {/* Login Button */}
+          <Link to="/login" className="btn btn-primary mt-4">
+            Login to Get Started
+          </Link>
         </div>
         <div className="col-md-6">
           <img 

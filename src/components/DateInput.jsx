@@ -229,7 +229,7 @@ function DateInput() {
           </div>
         </div>
         {/* Information Column (col-8) */}
-        <div className="col-12 mt-4 mt-md-0">
+        <div className="col-12 mt-4 mt-md-0 p-3">
           {!pdfUrl && (
             <div className="card shadow-sm mb-4">
               <div className="card-header bg-secondary text-white">
