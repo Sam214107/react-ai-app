@@ -19,7 +19,7 @@ function Navbar() {
 
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link fs-6 text-primary" href="#">
+              <a className="nav-link fs-6 text-primary" href="https://ai.meta.com/blog/meta-llama-3/">
                 Llama 3.1
               </a>
             </li>
