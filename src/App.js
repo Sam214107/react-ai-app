@@ -26,7 +26,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import './styles/App.scss';
 import Navbar from './components/Navbar';
 import HeroComponent from './components/HeroComponent';
-import Footer from './components/footer';
 import DateInput from './components/DateInput';
 import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
@@ -51,7 +50,6 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/dateinput" element={<DateInput />} />
       </Routes>
-      <Footer />
     </Router>
   );
 }
