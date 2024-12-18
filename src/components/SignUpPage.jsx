@@ -38,6 +38,7 @@ const SignUpPage = () => {
       if (response.status === 200 || response.status === 201) {
         alert('User registered successfully!');
         setFormData({ username: '', email: '', password: '' });
+        window.location.href = "/login";
       }
     } catch (err) {
       // Capture the error message sent by backend

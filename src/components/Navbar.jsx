@@ -2,7 +2,7 @@ import React from 'react';
 import '../styles/hero.css'
 function Navbar() {
   return (<>
-    <nav className="navbar navbar-expand-lg navbar-dark " style={{ backgroundColor: '#14213d' }}>
+    <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: '#14213d' }}>
       <div className="container justify-content-center">
         <div className="d-flex align-items-center  justify-content-between">
           <ul className="navbar-nav">

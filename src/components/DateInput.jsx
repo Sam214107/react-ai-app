@@ -435,11 +435,35 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 import About from './About';
 import Generator from './Generator';
+import MyReport from './MyReport';
 
 function Dashboard() {
   const [activeComponent, setActiveComponent] = useState('about');
+
+  const handleLogout = async () => {
+    try {
+        const response = await axios.post(
+            'http://127.0.0.1:8000/logout',
+            {},
+            { withCredentials: true }
+        );
+
+        if (response.status === 200 && response.data.isSucess) {
+            alert(response.data.message);
+            localStorage.removeItem('UserId'); 
+            window.location.href = "/login"; 
+        } else {
+            alert(response.data.message || "Failed to log out");
+        }
+    } catch (error) {
+        console.error("Error logging out:", error);
+        alert("An error occurred while logging out");
+    }
+};
+
 
   // Function to render the active component
   const renderComponent = () => {
@@ -448,6 +472,8 @@ function Dashboard() {
         return <About />;
       case 'generator':
         return <Generator />;
+      case 'myreport':
+        return <MyReport />;
       default:
         return <About />;
     }
@@ -482,7 +508,22 @@ function Dashboard() {
             >
               Generator
             </Nav.Link>
+            <Nav.Link
+              className="text-light"
+              onClick={() => setActiveComponent('myreport')}
+              style={{ cursor: 'pointer' }}
+            >
+              My Report
+            </Nav.Link>
           </Nav>
+          <div className="mt-auto p-3">
+            <button
+              className="btn btn-outline-light w-100 bg-red"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </div>
         </Col>
 
         {/* Main Content */}

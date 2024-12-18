@@ -22,12 +22,17 @@ const LoginPage = () => {
         { identifier, password },
         { withCredentials: true } // Ensures cookies are sent and received
       );
-
-      if (response.status === 200) {
-        alert('Login Successful');
-        navigate('/DateInput'); // Redirect to DateInput page
+    
+      // Handle backend response
+      const { status, isSucess, message, UserId } = response.data;
+    
+      if (status === 200 && isSucess) {
+        alert(message); 
+        console.log("UserID:", UserId); 
+        localStorage.setItem('UserId',UserId);
+        navigate('/DateInput'); 
       } else {
-        alert(response.data.detail || 'Invalid credentials'); // Backend error message
+        alert(message || 'Login failed. Please try again.'); 
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -35,7 +40,7 @@ const LoginPage = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  };    
 
   return (
     <div className="container-fluid vh-100 d-flex align-items-center">
