@@ -1,56 +1,66 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import reportImage from '../report.jpg';
+import axios from 'axios';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Simulate login success
-    if (email === 'user@example.com' && password === 'password') {
-      alert('Login Successful');
-      navigate('/DateInput'); // Redirect to DateInput page
-    } else {
-      alert('Invalid credentials');
-    }
-  };
+    setIsLoading(true);
 
-  const handleForgotPassword = (e) => {
-    e.preventDefault();
-    // Logic to handle forgot password
-    console.log("Password reset email sent to:", resetEmail);
-    setShowForgotPassword(false);
+    try {
+      // Send login request
+      const response = await axios.post(
+        'http://127.0.0.1:8000/login',
+        { identifier, password },
+        { withCredentials: true } // Ensures cookies are sent and received
+      );
+
+      if (response.status === 200) {
+        alert('Login Successful');
+        navigate('/DateInput'); // Redirect to DateInput page
+      } else {
+        alert(response.data.detail || 'Invalid credentials'); // Backend error message
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert(error.response?.data?.detail || 'Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="container-fluid vh-100 d-flex align-items-center">
       <div className="row w-100">
         {/* Left Section: Login Form */}
-        <div className="col-md-6 d-flex justify-content-center align-items-center ">
+        <div className="col-md-6 d-flex justify-content-center align-items-center">
           <div className="card shadow-lg p-4" style={{ maxWidth: '400px', width: '100%' }}>
             <h3 className="text-center mb-4">Welcome To ReportAI</h3>
             <form onSubmit={handleLogin}>
               <div className="form-group mb-3">
-                <label htmlFor="email" className="form-label">Email Address</label>
+                <label htmlFor="email" className="form-label">UserName or Email</label>
                 <input
-                  type="email"
-                  id="email"
+                  type="text"
+                  id="identifier"
                   className="form-control"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email or username"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                   required
                 />
               </div>
               <div className="form-group mb-3">
                 <label htmlFor="password" className="form-label">Password</label>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   className="form-control"
                   placeholder="Enter your password"
@@ -61,15 +71,21 @@ const LoginPage = () => {
               </div>
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <div className="form-check">
-                  <input type="checkbox" id="remember" className="form-check-input" />
-                  <label htmlFor="remember" className="form-check-label">Remember Me</label>
+                  <input
+                    type="checkbox"
+                    id="showPassword"
+                    className="form-check-input"
+                    checked={showPassword}
+                    onChange={() => setShowPassword(!showPassword)}
+                  />
+                  <label htmlFor="showPassword" className="form-check-label">Show Password</label>
                 </div>
-                <button type="button" className="btn btn-link p-0" onClick={() => setShowForgotPassword(true)}>Forgot Password?</button>
               </div>
-              <button type="submit" className="btn btn-primary w-100">Login</button>
+              <button type="submit" className="btn btn-primary w-100" disabled={isLoading}>
+                {isLoading ? 'Logging in...' : 'Login'}
+              </button>
             </form>
             <div className="text-center mt-3">
-              {/* <p className="mb-0">Don't have an account? <a href="#!" className="text-primary">Sign Up</a></p> */}
               <p className="mb-0">
                 Don't have an account?{' '}
                 <span
@@ -80,38 +96,6 @@ const LoginPage = () => {
                   Sign Up
                 </span>
               </p>
-            </div>
-            <div>
-              {/* Forgot Password Modal */}
-              {showForgotPassword && (
-                <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                  <div className="modal-dialog">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title">Reset Password</h5>
-                        <button type="button" className="btn-close" onClick={() => setShowForgotPassword(false)}></button>
-                      </div>
-                      <div className="modal-body">
-                        <form onSubmit={handleForgotPassword}>
-                          <div className="form-group mb-3">
-                            <label htmlFor="resetEmail" className="form-label">Email Address</label>
-                            <input
-                              type="email"
-                              id="resetEmail"
-                              className="form-control"
-                              placeholder="Enter your email"
-                              value={resetEmail}
-                              onChange={(e) => setResetEmail(e.target.value)}
-                              required
-                            />
-                          </div>
-                          <button type="submit" className="btn btn-primary w-100">Send Reset Link</button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
