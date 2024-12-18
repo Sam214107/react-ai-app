@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import PdfTemplate from "./PdfTemplate";
+import PdfTemplate from "../PdfTemplate";
 import { FaTrash } from "react-icons/fa";
 
 const Generator = () => {

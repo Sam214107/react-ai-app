@@ -1,10 +1,12 @@
 import React from 'react';
-import '../styles/hero.css'
-function Navbar() {
-  return (<>
-    <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: '#14213d' }}>
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+const Navbar = () => {
+  return (
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container justify-content-center">
-        <div className="d-flex align-items-center  justify-content-between">
+        <div className="d-flex align-items-center justify-content-between">
           <ul className="navbar-nav">
             <li className="nav-item">
               <a className="nav-link fs-6 text-light" href="https://console.groq.com/docs/overview">
@@ -27,10 +29,6 @@ function Navbar() {
         </div>
       </div>
     </nav>
-
-    <hr style={{ width: '100%', margin: '0 auto', border: '1px solid gray' }} />
-
-    </>
   );
 }
 

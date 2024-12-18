@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import reportImage from '../report.jpg';
 import axios from 'axios';
 
-const LoginPage = () => {
-  const [identifier, setIdentifier] = useState('');
+const LoginComponent = ({onClick}) => {
+
+    const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -20,19 +19,21 @@ const LoginPage = () => {
       const response = await axios.post(
         'http://127.0.0.1:8000/login',
         { identifier, password },
-        { withCredentials: true } // Ensures cookies are sent and received
+       // Ensures cookies are sent and received
       );
-    
+
+      console.log(response)
       // Handle backend response
-      const { status, isSucess, message, UserId } = response.data;
-    
+      const { status, isSucess, message, UserId,SessionId } = response.data;
+  
       if (status === 200 && isSucess) {
-        alert(message); 
-        console.log("UserID:", UserId); 
-        localStorage.setItem('UserId',UserId);
-        navigate('/DateInput'); 
+        alert(message);
+        console.log("UserID:", UserId);
+        localStorage.setItem('UserId', UserId); // Store UserId in localStorage
+        localStorage.setItem('SessionId', SessionId); // Store UserId in localStorage
+        navigate('/dashboard'); // Redirect to dashboard
       } else {
-        alert(message || 'Login failed. Please try again.'); 
+        alert(message || 'Login failed. Please try again.');
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -40,13 +41,10 @@ const LoginPage = () => {
     } finally {
       setIsLoading(false);
     }
-  };    
+    }; 
 
   return (
-    <div className="container-fluid vh-100 d-flex align-items-center">
-      <div className="row w-100">
-        {/* Left Section: Login Form */}
-        <div className="col-md-6 d-flex justify-content-center align-items-center">
+    <div className="col-md-6 d-flex justify-content-center align-items-center">
           <div className="card shadow-lg p-4" style={{ maxWidth: '400px', width: '100%' }}>
             <h3 className="text-center mb-4">Welcome To ReportAI</h3>
             <form onSubmit={handleLogin}>
@@ -94,7 +92,7 @@ const LoginPage = () => {
               <p className="mb-0">
                 Don't have an account?{' '}
                 <span
-                  onClick={() => navigate('/signup')} // Navigate to the Sign-Up page
+                  onClick={onClick} // Navigate to the Sign-Up page
                   className="text-primary"
                   style={{ cursor: 'pointer' }}
                 >
@@ -104,19 +102,7 @@ const LoginPage = () => {
             </div>
           </div>
         </div>
+  )
+}
 
-        {/* Right Section: Image */}
-        <div className="col-md-6 d-flex justify-content-center align-items-center">
-          <img 
-            src={reportImage} 
-            alt="AI Reporting Illustration" 
-            className="img-fluid" 
-            style={{ maxHeight: '90%' }} 
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default LoginPage;
+export default LoginComponent
