@@ -57,55 +57,59 @@ const Dashboard = () => {
 
   return (
  
-      <div className="d-flex">
-        {/* Sidebar */}
-        <div
-          className="sidebar bg-dark text-white p-3 fixed-left"
-          style={{ width: "250px", height: "100vh", position: "fixed" }}
-        >
-          <ul className="nav flex-column">
-            <li className="nav-item">
-              <a
-                className="nav-link text-white"
-                onClick={() => setActiveComponent("about")}
-                style={{ cursor: "pointer" }}
-              >
-                About
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="text-light"
-                onClick={() => setActiveComponent("generator")}
-                style={{ cursor: "pointer" }}
-                href="#option2"
-              >
-                Generate
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="text-light"
-                onClick={() => setActiveComponent("myreport")}
-                style={{ cursor: "pointer" }}
-              >
-                My Reports
-              </a>
-            </li>
-            <li className="nav-item">
+    <div className="d-flex">
+    {/* Sidebar */}
+    <div
+      className="sidebar text-white d-flex flex-column justify-content-between p-3 fixed-left"
+      style={{ width: "250px", height: "100vh", position: "fixed", background: "#001c55"}}
+    >
+      {/* Navigation Links */}
+      <div>
+        <ul className="nav flex-column">
+          <li className="nav-item mb-3">
+            <a
+              className="nav-link text-white"
+              onClick={() => setActiveComponent("about")}
+              style={{ cursor: "pointer" }}
+            >
+              About
+            </a>
+          </li>
+          <li className="nav-item mb-3">
+            <a
+              className=" nav-link text-light"
+              onClick={() => setActiveComponent("generator")}
+              style={{ cursor: "pointer" }}
+            >
+              Generate
+            </a>
+          </li>
+          <li className="nav-item mb-3">
+            <a
+              className="nav-link text-light"
+              onClick={() => setActiveComponent("myreport")}
+              style={{ cursor: "pointer" }}
+            >
+              My Reports
+            </a>
+          </li>
+          <li className="nav-item">
               <button
-                className="btn btn-outline-light w-100 bg-red"
+                className="btn btn-outline-light w-100"
                 onClick={handleLogout}
+                style={{background:"red", width:"50%"}}
               >
                 Logout
               </button>
             </li>
-          </ul>
-        </div>
-
-        {/* Main Content */}
-        <div className="main-content p-3 align-items-center">{renderComponent()}</div>
-      </div> 
+        </ul>
+      </div>
+    </div>
+  
+    {/* Main Content */}
+    <div className="main-content p-3 align-items-center">{renderComponent()}</div>
+  </div>
+  
   );
 };
 

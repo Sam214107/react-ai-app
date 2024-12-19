@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#14213D"}}>
       <div className="container justify-content-center">
         <div className="d-flex align-items-center justify-content-between">
           <ul className="navbar-nav">
@@ -15,7 +15,7 @@ const Navbar = () => {
             </li>
           </ul>
 
-          <div className="navbar-brand fw-bold fs-4 mx-4 fs-5 text-grey text-center">
+          <div className="navbar-brand fw-bold fs-4 mx-4 fs-5 text-white text-center">
             Report AI
           </div>
 
