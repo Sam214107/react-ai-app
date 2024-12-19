@@ -90,15 +90,15 @@ const MyReport = () => {
             try {
                 // Get UserID from localStorage
                 const UserId = localStorage.getItem("UserId");
-                if (!UserId) {
-                    alert("User not logged in.");
-                    return;
+                
+                console.log(typeof UserId);
+                console.log(UserId);
+                const userObject =  {
+                    UserID : Number(UserId) 
                 }
 
                 // Send GET request to the backend API
-                const response = await axios.get("http://127.0.0.1:8000/get_reports/", {
-                    userID : UserId, 
-                });
+                const response = await axios.post("http://127.0.0.1:8000/get_reports",userObject);
 
                 // Handle response
                 if (response.status === 200 && response.data.isSuccess) {

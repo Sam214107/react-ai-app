@@ -57,7 +57,7 @@ const Dashboard = () => {
 
   return (
  
-    <div className="d-flex">
+    <div className="d-flex" style={{ paddingTop:'56px' }}>
     {/* Sidebar */}
     <div
       className="sidebar text-white d-flex flex-column justify-content-between p-3 fixed-left"
