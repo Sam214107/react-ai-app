@@ -65,8 +65,9 @@ const Dashboard = () => {
     >
       {/* Navigation Links */}
       <div>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-3">
+        <ul className="nav flex-column align-items-center">
+          <h3>Dashboard</h3>
+          <li className="nav-item mb-1">
             <a
               className="nav-link text-white"
               onClick={() => setActiveComponent("about")}
@@ -75,7 +76,7 @@ const Dashboard = () => {
               About
             </a>
           </li>
-          <li className="nav-item mb-3">
+          <li className="nav-item mb-1">
             <a
               className=" nav-link text-light"
               onClick={() => setActiveComponent("generator")}
@@ -84,7 +85,7 @@ const Dashboard = () => {
               Generate
             </a>
           </li>
-          <li className="nav-item mb-3">
+          <li className="nav-item mb-5">
             <a
               className="nav-link text-light"
               onClick={() => setActiveComponent("myreport")}
@@ -97,7 +98,7 @@ const Dashboard = () => {
               <button
                 className="btn btn-outline-light w-100"
                 onClick={handleLogout}
-                style={{background:"red", width:"50%"}}
+                style={{ width:"50%"}}
               >
                 Logout
               </button>

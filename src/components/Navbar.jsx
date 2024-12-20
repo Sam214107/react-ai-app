@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#14213D"}}>
+    <nav className="navbar navbar-expand-lg fixed-top" style={{ backgroundColor: "#14213D"}}>
       <div className="container justify-content-center">
         <div className="d-flex align-items-center justify-content-between">
           <ul className="navbar-nav">
