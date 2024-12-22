@@ -77,6 +77,7 @@
 // export default MyReport;
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import PdfCard from "../CardComponents/PdfCard";
 
 const MyReport = () => {
     const [reports, setReports] = useState([]);
@@ -158,7 +159,7 @@ const MyReport = () => {
             )}
 
             {/* Reports List */}
-            <div className="row">
+            {/* <div className="row">
                 {reports.map((report, index) => (
                     <div key={index} className="col-md-4 mb-4">
                         <div className="card shadow-sm">
@@ -175,7 +176,17 @@ const MyReport = () => {
                         </div>
                     </div>
                 ))}
-            </div>
+            </div> */}
+            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+      {reports.map((report) => (
+        <PdfCard
+          key={report.id}
+          title={report.Title}
+          description={report.Description}
+          onViewReport={() => handleViewReport(report.ReportData)}
+        />
+      ))}
+    </div>
         </div>
     );
 };
