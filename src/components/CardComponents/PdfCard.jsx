@@ -49,7 +49,7 @@ const StyledWrapper = styled.div`
     height: 50%;
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
-    background: linear-gradient(#e66465, #14213D);
+    background: linear-gradient(#e66465,rgb(15, 28, 54));
     display: flex;
     align-items: top;
     justify-content: right;
