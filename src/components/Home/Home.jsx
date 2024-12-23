@@ -22,7 +22,7 @@ const Home = () => {
     
 
   return (
-    <div className="container hero-container">
+    <div className="container hero-container" style={{paddingTop:'56px'}}>
       <div className="row align-items-center">
         {buttonState.textButton && <TextComponent onClick={() => handleClick('lb')} />}
         {buttonState.loginButton && <LoginComponent onClick={() => handleClick('sb')}  />}

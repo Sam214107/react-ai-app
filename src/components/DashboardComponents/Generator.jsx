@@ -13,11 +13,7 @@ const Generator = () => {
     const [error, setError] = useState(null);
     const [suggestionQuestions, setSuggestionQuestions] = useState([]);
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
-    const [showSaveModal, setShowSaveModal] = useState(false);
-    const [saveTitle, setSaveTitle] = useState("");
-    const [saveDescription, setSaveDescription] = useState("");
-    const [saveReportData, setSaveReportData] = useState('');
-
+    
     useEffect(() => {
         const fetchSuggestions = async () => {
             try {
@@ -33,7 +29,7 @@ const Generator = () => {
     useEffect(() => {
         console.log(inputs);
     }, [inputs]);
-
+    
     const handleAddInput = (event) => {
         event.preventDefault();
         if (inputs.length < 5) {
@@ -51,14 +47,27 @@ const Generator = () => {
     // Filter suggestions based on input
     useEffect(() => {
         if (inputValue) {
-        const filtered = suggestionQuestions.filter((item) =>
-            item.question.toLowerCase().includes(inputValue.toLowerCase())
-        );
-        setFilteredSuggestions(filtered);
+            const words = inputValue.toLowerCase().split(/\s+/); // Split input into words
+            const filtered = suggestionQuestions
+                .filter((item) => 
+                    words.some((word) => item.question.toLowerCase().includes(word)) // At least one word matches
+                )
+                .sort((a, b) => {
+                    // Sort by relevance (number of matching words)
+                    const getMatchCount = (question) =>
+                        words.reduce(
+                            (count, word) =>
+                                count + (question.toLowerCase().includes(word) ? 1 : 0),
+                            0
+                        );
+                    return getMatchCount(b.question) - getMatchCount(a.question);
+                });
+            setFilteredSuggestions(filtered);
         } else {
-        setFilteredSuggestions([]);
+            setFilteredSuggestions([]);
         }
     }, [inputValue, suggestionQuestions]);
+
 
     // Handle selecting a suggestion
     const handleSelectSuggestion = (suggestion) => {
@@ -89,42 +98,7 @@ const Generator = () => {
             setLoading(false);
         }
     };
-    const handleSave = async () => {
-        try {
-          // Get UserId from localStorage (Ensure the user is logged in)
-          const UserId = localStorage.getItem('UserId');
-          if (!UserId) {
-            alert('User is not logged in!');
-            return;
-          }
-      
-          // Prepare the report data to send to the backend
-          const reportData = {
-            UserID: UserId,
-            Title: saveTitle,
-            Description: saveDescription,
-            Report_data: saveReportData, // This should be the actual report data
-          };
-      
-          // Send a POST request to save the report
-          const response = await axios.post(
-            'http://127.0.0.1:8000/save_report/',
-            reportData,
-            { withCredentials: true } // Ensures cookies are sent and received
-          );
-      
-          if (response.status === 200 && response.data.isSucess) {
-            alert('Data saved successfully!');
-            setShowSaveModal(false); // Close the modal or handle UI state accordingly
-          } else {
-            alert(response.data.message || 'Failed to save report.');
-          }
-        } catch (err) {
-          console.error('Error saving data:', err);
-          alert('An error occurred while saving the data. Please try again.');
-        }
-      };
-
+    
 
     return (
         <div className="container ">
@@ -167,6 +141,7 @@ const Generator = () => {
                                 onChange={(e) => setInputValue(e.target.value)}
                                 placeholder="Ask Question like Give me the average sales value from..."
                                 style={{ border: "1px solid gray" }}
+                                required
                             />
                         </div>
 
@@ -176,42 +151,61 @@ const Generator = () => {
                             </div>
                         )}
 
-                        {filteredSuggestions.length > 0 && (
-                            <ul
-                                className="list-group position-absolute bg-white border rounded shadow"
-                                style={{
-                                    maxHeight: "150px",
-                                    overflowY: "auto",
-                                    zIndex: 10,
-                                    marginTop: "5px", // Space between input and dropdown
-                                    padding: "0", // Remove extra padding
-                                }}
-                            >
-                                {filteredSuggestions.map((suggestion, index) => (
-                                    <li
-                                        key={index}
-                                        className="list-group-item list-group-item-action"
-                                        onClick={() => {
-                                            setInputValue(suggestion.question);
-                                            setFilteredSuggestions(filteredSuggestions.filter((item) => item.question !== suggestion.question)); // Remove selected suggestion from the dropdown
-                                        }}
-                                        style={{
-                                            cursor: "pointer",
-                                            padding: "10px",
-                                        }}
-                                    >
-                                        {suggestion.question}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                            {inputValue && filteredSuggestions.length > 0 && (
+                                <ul
+                                    className="list-group position-absolute bg-white border rounded shadow"
+                                    style={{
+                                        maxHeight: "150px",
+                                        overflowY: "auto",
+                                        zIndex: 10,
+                                        marginTop: "5px", // Space between input and dropdown
+                                        padding: "0", // Remove extra padding
+                                    }}
+                                >
+                                    {filteredSuggestions.filter((suggestion) => {
+                                        // Split the user input into individual words
+                                        const words = inputValue.toLowerCase().split(/\s+/);
+                                        // Check if at least one word is present in the question
+                                        return words.some((word) =>
+                                            suggestion.question.toLowerCase().includes(word)
+                                        );
+                                    })
+                                        .sort((a, b) => {
+                                            // Sort questions by relevance (number of matching words)
+                                            const words = inputValue.toLowerCase().split(/\s+/);
+                                            const getMatchCount = (question) =>
+                                                words.reduce(
+                                                    (count, word) =>
+                                                        count +
+                                                        (question.question.toLowerCase().includes(word) ? 1 : 0),
+                                                    0
+                                                );
+                                            return getMatchCount(b) - getMatchCount(a); // Higher matches first
+                                        }).map((suggestion, index) => (
+                                            <li
+                                                key={index}
+                                                className="list-group-item list-group-item-action"
+                                                onClick={() => {
+                                                    setFilteredSuggestions([]);
+                                                    setInputValue(suggestion.question);
+                                                }}
+                                                style={{
+                                                    cursor: "pointer",
+                                                    padding: "10px",
+                                                }}
+                                            >
+                                                {suggestion.question}
+                                            </li>
+                                        ))}
+                                </ul>
+                            )}
 
                         <button
                             type="submit"
                             className="btn btn-primary mt-2"
                             disabled={inputs.length >= 5}
                         >
-                            Add More
+                            {inputs.length>0 ? 'Add More' : 'Add Questions'}
                         </button>
 
                         {/* questions suggestions */}
@@ -253,7 +247,6 @@ const Generator = () => {
                                         value={dateFrom}
                                         onChange={(e) => setDateFrom(e.target.value)}
                                         className="form-control"
-                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -266,7 +259,6 @@ const Generator = () => {
                                         value={dateTo}
                                         onChange={(e) => setDateTo(e.target.value)}
                                         className="form-control"
-                                        required
                                     />
                                 </div>
                         </div>
@@ -298,80 +290,7 @@ const Generator = () => {
                 {error && <p style={{ color: "red" }}>{error}</p>}
 
                 {/* Show PDF Template after successful data retrieval */}
-                {responseData && (
-                    <>
-                        <PdfTemplate data={responseData} />
-                        <div className="text-center mt-4">
-                            <button
-                                className="btn btn-success"
-                                onClick={() => setShowSaveModal(true)}
-                            >
-                                Save Report
-                            </button>
-                        </div>
-                    </>
-                )}
-
-                {/* Save Modal */}
-                {showSaveModal && (
-                    <div
-                        className="modal-backdrop"
-                        style={{
-                            position: "fixed",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100%",
-                            backgroundColor: "rgba(0, 0, 0, 0.5)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            zIndex: 1050,
-                        }}
-                    >
-                        <div className="card p-4 shadow-lg w-50">
-                            <h4 className="text-center mb-4">Save Report</h4>
-                            <div className="form-group mb-3">
-                                <label htmlFor="saveTitle" className="form-label">
-                                    Title
-                                </label>
-                                <input
-                                    type="text"
-                                    id="saveTitle"
-                                    className="form-control"
-                                    value={saveTitle}
-                                    onChange={(e) => setSaveTitle(e.target.value)}
-                                />
-                            </div>
-                            <div className="form-group mb-3">
-                                <label htmlFor="saveDescription" className="form-label">
-                                    Description
-                                </label>
-                                <textarea
-                                    id="saveDescription"
-                                    className="form-control"
-                                    rows="3"
-                                    value={saveDescription}
-                                    onChange={(e) => setSaveDescription(e.target.value)}
-                                />
-                            </div>
-                            <div className="text-center">
-                                <button
-                                    className="btn btn-primary me-3"
-                                    onClick={handleSave}
-                                >
-                                    Save 
-                                </button>
-                                <button
-                                    className="btn btn-secondary"
-                                    onClick={() => setShowSaveModal(false)}
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                {responseData && <PdfTemplate data={responseData} />}
             </div>
         </div>
     );

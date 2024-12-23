@@ -58,70 +58,74 @@ const SignupComponent = ({ onClick }) => {
 
   return (
     <div className="col-md-6 d-flex justify-content-center align-items-center">
-      <div className="card shadow-lg p-4 w-75">
-        <h3 className="text-center mb-4">Create Your Account</h3>
-        <form onSubmit={handleSignUp}>
-          <div className="form-group mb-3">
-            <label htmlFor="username" className="form-label">UserName</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              className="form-control"
-              placeholder="Enter your UserName"
-              value={formData.username}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group mb-3">
-            <label htmlFor="email" className="form-label">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="form-control"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group mb-3">
-            <label htmlFor="password" className="form-label">Password</label>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              id="password"
-              name="password"
-              className="form-control"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="showPassword"
-                className="form-check-input"
-                checked={showPassword}
-                onChange={() => setShowPassword(!showPassword)}
-              />
-              <label htmlFor="showPassword" className="form-check-label">Show Password</label>
-            </div>
-          </div>
-          <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-            {loading ? 'Signing Up...' : 'Sign Up'}
-          </button>
-        </form>
-        {error && <p className="text-danger mt-3">{error}</p>}
-        <div className="text-center mt-3">
-          <p className="mb-0">Already have an account? <a onClick={handleGoToLogin} className="text-primary">Login</a></p>
-        </div>
-      </div>
-      {isSignedUp && <LoginComponent />} {/* Render LoginComponent when signup is successful */}
+      
+      {isSignedUp ? <LoginComponent /> :
+
+<div className="card shadow-lg p-4 w-75">
+<h3 className="text-center mb-4">Create Your Account</h3>
+<form onSubmit={handleSignUp}>
+  <div className="form-group mb-3">
+    <label htmlFor="username" className="form-label">UserName</label>
+    <input
+      type="text"
+      id="username"
+      name="username"
+      className="form-control"
+      placeholder="Enter your UserName"
+      value={formData.username}
+      onChange={handleChange}
+      required
+    />
+  </div>
+  <div className="form-group mb-3">
+    <label htmlFor="email" className="form-label">Email Address</label>
+    <input
+      type="email"
+      id="email"
+      name="email"
+      className="form-control"
+      placeholder="Enter your email"
+      value={formData.email}
+      onChange={handleChange}
+      required
+    />
+  </div>
+  <div className="form-group mb-3">
+    <label htmlFor="password" className="form-label">Password</label>
+    <input
+      type={showPassword ? 'text' : 'password'}
+      id="password"
+      name="password"
+      className="form-control"
+      placeholder="Enter your password"
+      value={formData.password}
+      onChange={handleChange}
+      required
+    />
+  </div>
+  <div className="d-flex justify-content-between align-items-center mb-3">
+    <div className="form-check">
+      <input
+        type="checkbox"
+        id="showPassword"
+        className="form-check-input"
+        checked={showPassword}
+        onChange={() => setShowPassword(!showPassword)}
+      />
+      <label htmlFor="showPassword" className="form-check-label">Show Password</label>
+    </div>
+  </div>
+  <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+    {loading ? 'Signing Up...' : 'Sign Up'}
+  </button>
+</form>
+{error && <p className="text-danger mt-3">{error}</p>}
+<div className="text-center mt-3">
+  <p className="mb-0">Already have an account? <a onClick={handleGoToLogin} className="text-primary">Login</a></p>
+</div>
+</div>
+      
+      } {/* Render LoginComponent when signup is successful */}
     </div>
   );
 };
