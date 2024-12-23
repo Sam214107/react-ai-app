@@ -13,7 +13,27 @@ const Generator = () => {
     const [error, setError] = useState(null);
     const [suggestionQuestions, setSuggestionQuestions] = useState([]);
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+    const [isDisplay, setIsDisplay] = useState("");
+    const [shuffledSuggestions, setShuffledSuggestions] = useState([]);
+    useEffect(() => {
+        // Function to shuffle and pick 4 random suggestions
+        const shuffleSuggestions = () => {
+            const shuffled = [...suggestionQuestions]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 4);
+            setShuffledSuggestions(shuffled);
+        };
     
+        // Initial shuffle
+        shuffleSuggestions();
+    
+        // Set interval for periodic shuffle (e.g., every 5 seconds)
+        const intervalId = setInterval(shuffleSuggestions, 5000);
+    
+        // Cleanup interval on unmount
+        return () => clearInterval(intervalId);
+    }, [suggestionQuestions]);
+
     useEffect(() => {
         const fetchSuggestions = async () => {
             try {
@@ -46,7 +66,7 @@ const Generator = () => {
 
     // Filter suggestions based on input
     useEffect(() => {
-        if (inputValue) {
+        if (inputValue && isDisplay !== "dropdown") {
             const words = inputValue.toLowerCase().split(/\s+/); // Split input into words
             const filtered = suggestionQuestions
                 .filter((item) => 
@@ -62,8 +82,14 @@ const Generator = () => {
                         );
                     return getMatchCount(b.question) - getMatchCount(a.question);
                 });
+                console.log("first time")
+                setIsDisplay(true);
             setFilteredSuggestions(filtered);
+        } else if(inputValue && isDisplay==="dropdown"){
+            setFilteredSuggestions([]);
+            setIsDisplay("");
         } else {
+            console.log("last time")
             setFilteredSuggestions([]);
         }
     }, [inputValue, suggestionQuestions]);
@@ -71,7 +97,10 @@ const Generator = () => {
 
     // Handle selecting a suggestion
     const handleSelectSuggestion = (suggestion) => {
+        console.log("Hi");
+        setIsDisplay("dropdown");
         setInputValue(suggestion);
+      
         setFilteredSuggestions([]);
     };
 
@@ -98,6 +127,7 @@ const Generator = () => {
             setLoading(false);
         }
     };
+    
     
 
     return (
@@ -130,7 +160,7 @@ const Generator = () => {
                     </div>
                     <form onSubmit={handleAddInput} className="mb-3">
                         <div className="form-group">
-                            <label htmlFor="userInput" className="form-label">
+                            <label htmlFor="userInput" className="form-label" style={{ color: "black", fontWeight: "bold", fontSize: "1.2em" }}>
                                 Enter your questions:
                             </label>
                             <input
@@ -151,7 +181,7 @@ const Generator = () => {
                             </div>
                         )}
 
-                            {inputValue && filteredSuggestions.length > 0 && (
+                            {isDisplay && filteredSuggestions.length > 0 && (
                                 <ul
                                     className="list-group position-absolute bg-white border rounded shadow"
                                     style={{
@@ -186,8 +216,7 @@ const Generator = () => {
                                                 key={index}
                                                 className="list-group-item list-group-item-action"
                                                 onClick={() => {
-                                                    setFilteredSuggestions([]);
-                                                    setInputValue(suggestion.question);
+                                                    handleSelectSuggestion(suggestion.question);
                                                 }}
                                                 style={{
                                                     cursor: "pointer",
@@ -204,6 +233,7 @@ const Generator = () => {
                             type="submit"
                             className="btn btn-primary mt-2"
                             disabled={inputs.length >= 5}
+                            style={{background:"#14213D"}}
                         >
                             {inputs.length>0 ? 'Add More' : 'Add Questions'}
                         </button>
@@ -211,9 +241,9 @@ const Generator = () => {
                         {/* questions suggestions */}
                         {suggestionQuestions.length > 0 && (
                             <div className="container text-center mt-4">
-                                <h3>Suggested Questions</h3>
+                                <h3 style={{ color: "#808080" }}>Suggested Questions</h3>
                                 <div className="d-flex flex-wrap justify-content-center gap-3 mt-3">
-                                    {suggestionQuestions.slice(0,4).map((item, index) => (
+                                    {shuffledSuggestions.map((item, index) => (
                                         <div
                                             key={index}
                                             className="bg-light rounded p-1 shadow-sm d-flex align-items-center justify-content-center"
@@ -233,7 +263,7 @@ const Generator = () => {
                 <div className="col-12 col-md-4">
                 <form onSubmit={handleSubmit}>
                     <div className="card shadow-lg">
-                        <div className="card-header bg-primary text-white text-center">
+                        <div className="card-header text-white text-center" style={{background:"#14213D"}}>
                             <h4>Select Date Range</h4>
                         </div>
                         <div className="card-body p-4">
@@ -267,8 +297,9 @@ const Generator = () => {
                 <button
                     onSubmit={handleSubmit}
                     type="submit"
-                    className="btn btn-primary w-75 d-flex align-items-center justify-content-center mt-4"
+                    className="btn w-75 d-flex align-items-center justify-content-center mt-4"
                     disabled={loading}
+                    style={{fontSize: "1.2em", fontWeight: "bold", background:"#14213D", color:"white"}}
                 >
                     {loading ? (
                         <>
@@ -280,7 +311,7 @@ const Generator = () => {
                             Generating...
                         </>
                     ) : (
-                        "Submit"
+                        "Generate"
                     )}
                 </button>
                 </center>
