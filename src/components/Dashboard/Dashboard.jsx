@@ -23,7 +23,7 @@
 //   const handleLogout = async () => {
 //     try {
 //       const response = await axios.post(
-//         "http://127.0.0.1:8000/logout",
+//         "http://localhost:8000/logout",
 //         {SessionId : String(localStorage.getItem("SessionId"))},
         
 //       );
@@ -141,7 +141,7 @@
 
 //   const handleLogout = async () => {
 //     try {
-//       const response = await axios.post("http://127.0.0.1:8000/logout", {
+//       const response = await axios.post("http://localhost:8000/logout", {
 //         SessionId: String(localStorage.getItem("SessionId")),
 //       });
 //       if (response.status === 200 && response.data.isSucess) {
@@ -231,7 +231,7 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/logout", {
+      const response = await axios.post("http://localhost:8000/logout", {
         SessionId: String(localStorage.getItem("SessionId")),
       });
       if (response.status === 200 && response.data.isSucess) {

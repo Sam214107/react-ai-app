@@ -17,7 +17,7 @@ const LoginComponent = ({onClick}) => {
     try {
       // Send login request
       const response = await axios.post(
-        'http://127.0.0.1:8000/login',
+        'http://localhost:8000/login',
         { identifier, password },
        // Ensures cookies are sent and received
       );
