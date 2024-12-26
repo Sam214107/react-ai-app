@@ -287,18 +287,18 @@ const Dashboard = () => {
             }}
           >
             <div>
-              <h3 className="text-left">Dashboard</h3>
-              <div className="mb-3">
+              <h3 className="text-center">Dashboard</h3>
+              <div className="mb-3 text-center">
                 <DashboardButtons label="About" onClick={() => setActiveComponent("about")} />
               </div>
-              <div className="mb-3">
+              <div className="mb-3 text-center">
                 <DashboardButtons label="Generate" onClick={() => setActiveComponent("generator")} />
               </div>
-              <div className="mb-5">
+              <div className="mb-5 text-center">
                 <DashboardButtons label="My Reports" onClick={() => setActiveComponent("myreport")} />
               </div>
             </div>
-            <div className="mb-5">
+            <div className="mb-5 text-center">
               <DashboardButtons label="Logout" onClick={handleLogout} />
             </div>
           </div>
