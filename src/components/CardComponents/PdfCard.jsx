@@ -2,7 +2,7 @@ import React from 'react';
 import { FaTrash } from 'react-icons/fa';
 import styled from 'styled-components';
 
-const PdfCard = ({ title, description, onViewReport }) => {
+const PdfCard = ({ title, description, onViewReport, onDeleteReport }) => {
   return (
     <StyledWrapper>
       <div className="card">
@@ -15,6 +15,7 @@ const PdfCard = ({ title, description, onViewReport }) => {
                       <button
                           type="button"
                           className="btn btn-danger btn-sm"
+                          onClick={onDeleteReport}
                       >
                           <FaTrash />
                       </button>

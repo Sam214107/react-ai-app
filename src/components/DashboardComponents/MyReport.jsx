@@ -1,80 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-
-// const MyReport = () => {
-//     const [reports, setReports] = useState([]);
-//     const [loading, setLoading] = useState(false);
-//     const [error, setError] = useState(null);
-
-//     useEffect(() => {
-//         const fetchReports = async () => {
-//             setLoading(true);
-
-//             try {
-//                 const UserId = localStorage.getItem('UserId');
-//                 if (!UserId) {
-//                 alert('User not logged in.');
-//                 return;
-//                 }
-//                 const response = await axios.get("http://localhost:8000/get_reports/", {
-//                     params: {userId:UserId},
-//                 });
-
-//                 if (response.status === 200 && response.data.isSuccess) {
-//                     setReports(response.data.data); 
-//                 } else {
-//                     alert(response.data.message || 'Failed to retrieve reports.');
-//                 }
-//             } catch (err) {
-//                 console.error("Error fetching reports:", err);
-//                 setError("An unexpected error occurred while fetching reports.");
-//             } finally {
-//                 setLoading(false);
-//             }
-//         };
-
-//         fetchReports();
-//     }, []);
-
-//     return (
-//         <div className="container mt-4">
-//             <h1>My Reports</h1>
-//             <hr style={{ width: "100%", marginBottom: "16px", border: "1px solid gray" }} />
-
-//             {loading && (
-//                 <div className="text-center">
-//                     <span className="spinner-border" role="status" aria-hidden="true"></span>
-//                     <span>Loading...</span>
-//                 </div>
-//             )}
-
-//             {error && <p style={{ color: "red" }}>{error}</p>}
-
-//             {!loading && reports.length === 0 && <p>No reports available. Start generating!</p>}
-
-//             <div className="row">
-//                 {reports.map((report, index) => (
-//                     <div key={index} className="col-md-4 mb-4">
-//                         <div className="card shadow-sm">
-//                             <div className="card-body">
-//                                 <h5 className="card-title">{report.Title}</h5>
-//                                 <p className="card-text">{report.Description}</p>
-//                                 <button 
-//                                     className="btn btn-primary"
-//                                     onClick={() => alert("Report Data: " + report.ReportData)}
-//                                 >
-//                                     View Report
-//                                 </button>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 ))}
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default MyReport;
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import PdfCard from "../CardComponents/PdfCard";
@@ -118,6 +41,22 @@ const MyReport = () => {
         fetchReports();
     }, []);
 
+    const handleDeleteReport = async (reportId) => {
+        try {
+            const response = await axios.post("http://localhost:8000/delete_report", { ReportID: reportId });
+
+            if (response.status === 200 && response.data.isSuccess) {
+                setReports(reports.filter((report) => report.id !== reportId));
+                alert("Report deleted successfully.");
+            } else {
+                alert(response.data.message || "Failed to delete report.");
+            }
+        } catch (err) {
+            console.error("Error deleting report:", err);
+            alert("An unexpected error occurred while deleting the report.");
+        }
+    };
+
     // Function to handle Base64 to PDF preview
     const handleViewReport = (base64String) => {
         try {
@@ -159,34 +98,17 @@ const MyReport = () => {
             )}
 
             {/* Reports List */}
-            {/* <div className="row">
-                {reports.map((report, index) => (
-                    <div key={index} className="col-md-4 mb-4">
-                        <div className="card shadow-sm">
-                            <div className="card-body">
-                                <h5 className="card-title">{report.Title}</h5>
-                                <p className="card-text">{report.Description}</p>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => handleViewReport(report.ReportData)} // Pass Base64 string to the handler
-                                >
-                                    View Report
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div> */}
             <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-      {reports.map((report) => (
-        <PdfCard
-          key={report.id}
-          title={report.Title}
-          description={report.Description}
-          onViewReport={() => handleViewReport(report.ReportData)}
-        />
-      ))}
-    </div>
+                {reports.map((report) => (
+                    <PdfCard
+                        key={report.id}
+                        title={report.Title}
+                        description={report.Description}
+                        onViewReport={() => handleViewReport(report.ReportData)}
+                        onDeleteReport={() => handleDeleteReport(report.id)}
+                    />
+                ))}
+            </div>
         </div>
     );
 };
