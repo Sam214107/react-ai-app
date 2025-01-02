@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import PdfTemplate from "./PdfTemplate";
+import PdfTemplate from "../PdfTemplate";
 import { FaTrash } from "react-icons/fa";
 
 const Generator = () => {
@@ -13,11 +13,31 @@ const Generator = () => {
     const [error, setError] = useState(null);
     const [suggestionQuestions, setSuggestionQuestions] = useState([]);
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+    const [isDisplay, setIsDisplay] = useState("");
+    const [shuffledSuggestions, setShuffledSuggestions] = useState([]);
+    useEffect(() => {
+        // Function to shuffle and pick 4 random suggestions
+        const shuffleSuggestions = () => {
+            const shuffled = [...suggestionQuestions]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 4);
+            setShuffledSuggestions(shuffled);
+        };
+    
+        // Initial shuffle
+        shuffleSuggestions();
+    
+        // Set interval for periodic shuffle (e.g., every 5 seconds)
+        const intervalId = setInterval(shuffleSuggestions, 5000);
+    
+        // Cleanup interval on unmount
+        return () => clearInterval(intervalId);
+    }, [suggestionQuestions]);
 
     useEffect(() => {
         const fetchSuggestions = async () => {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/suggest_questions/");
+                const response = await axios.get("http://localhost:8000/suggest_questions/");
                 setSuggestionQuestions(response.data.data);
             } catch (err) {
                 console.error("Error fetching suggestions:", err);
@@ -29,7 +49,7 @@ const Generator = () => {
     useEffect(() => {
         console.log(inputs);
     }, [inputs]);
-
+    
     const handleAddInput = (event) => {
         event.preventDefault();
         if (inputs.length < 5) {
@@ -46,19 +66,41 @@ const Generator = () => {
 
     // Filter suggestions based on input
     useEffect(() => {
-        if (inputValue) {
-        const filtered = suggestionQuestions.filter((item) =>
-            item.question.toLowerCase().includes(inputValue.toLowerCase())
-        );
-        setFilteredSuggestions(filtered);
+        if (inputValue && isDisplay !== "dropdown") {
+            const words = inputValue.toLowerCase().split(/\s+/); // Split input into words
+            const filtered = suggestionQuestions
+                .filter((item) => 
+                    words.some((word) => item.question.toLowerCase().includes(word)) // At least one word matches
+                )
+                .sort((a, b) => {
+                    // Sort by relevance (number of matching words)
+                    const getMatchCount = (question) =>
+                        words.reduce(
+                            (count, word) =>
+                                count + (question.toLowerCase().includes(word) ? 1 : 0),
+                            0
+                        );
+                    return getMatchCount(b.question) - getMatchCount(a.question);
+                });
+                console.log("first time")
+                setIsDisplay(true);
+            setFilteredSuggestions(filtered);
+        } else if(inputValue && isDisplay==="dropdown"){
+            setFilteredSuggestions([]);
+            setIsDisplay("");
         } else {
-        setFilteredSuggestions([]);
+            console.log("last time")
+            setFilteredSuggestions([]);
         }
     }, [inputValue, suggestionQuestions]);
 
+
     // Handle selecting a suggestion
     const handleSelectSuggestion = (suggestion) => {
+        console.log("Hi");
+        setIsDisplay("dropdown");
         setInputValue(suggestion);
+      
         setFilteredSuggestions([]);
     };
 
@@ -69,7 +111,7 @@ const Generator = () => {
         setResponseData(null);
 
         try {
-            const response = await axios.post("http://127.0.0.1:8000/generate_report/", {
+            const response = await axios.post("http://localhost:8000/generate_report/", {
                 start_date: dateFrom,
                 end_date: dateTo,
                 qlist: inputs,
@@ -85,6 +127,8 @@ const Generator = () => {
             setLoading(false);
         }
     };
+    
+    
 
     return (
         <div className="container ">
@@ -116,7 +160,7 @@ const Generator = () => {
                     </div>
                     <form onSubmit={handleAddInput} className="mb-3">
                         <div className="form-group">
-                            <label htmlFor="userInput" className="form-label">
+                            <label htmlFor="userInput" className="form-label" style={{ color: "black", fontWeight: "bold", fontSize: "1.2em" }}>
                                 Enter your questions:
                             </label>
                             <input
@@ -127,6 +171,7 @@ const Generator = () => {
                                 onChange={(e) => setInputValue(e.target.value)}
                                 placeholder="Ask Question like Give me the average sales value from..."
                                 style={{ border: "1px solid gray" }}
+                                required
                             />
                         </div>
 
@@ -136,50 +181,69 @@ const Generator = () => {
                             </div>
                         )}
 
-                        {filteredSuggestions.length > 0 && (
-                            <ul
-                                className="list-group position-absolute bg-white border rounded shadow"
-                                style={{
-                                    maxHeight: "150px",
-                                    overflowY: "auto",
-                                    zIndex: 10,
-                                    marginTop: "5px", // Space between input and dropdown
-                                    padding: "0", // Remove extra padding
-                                }}
-                            >
-                                {filteredSuggestions.map((suggestion, index) => (
-                                    <li
-                                        key={index}
-                                        className="list-group-item list-group-item-action"
-                                        onClick={() => {
-                                            setInputValue(suggestion.question);
-                                            setFilteredSuggestions(filteredSuggestions.filter((item) => item.question !== suggestion.question)); // Remove selected suggestion from the dropdown
-                                        }}
-                                        style={{
-                                            cursor: "pointer",
-                                            padding: "10px",
-                                        }}
-                                    >
-                                        {suggestion.question}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
+                            {isDisplay && filteredSuggestions.length > 0 && (
+                                <ul
+                                    className="list-group position-absolute bg-white border rounded shadow"
+                                    style={{
+                                        maxHeight: "150px",
+                                        overflowY: "auto",
+                                        zIndex: 10,
+                                        marginTop: "5px", // Space between input and dropdown
+                                        padding: "0", // Remove extra padding
+                                    }}
+                                >
+                                    {filteredSuggestions.filter((suggestion) => {
+                                        // Split the user input into individual words
+                                        const words = inputValue.toLowerCase().split(/\s+/);
+                                        // Check if at least one word is present in the question
+                                        return words.some((word) =>
+                                            suggestion.question.toLowerCase().includes(word)
+                                        );
+                                    })
+                                        .sort((a, b) => {
+                                            // Sort questions by relevance (number of matching words)
+                                            const words = inputValue.toLowerCase().split(/\s+/);
+                                            const getMatchCount = (question) =>
+                                                words.reduce(
+                                                    (count, word) =>
+                                                        count +
+                                                        (question.question.toLowerCase().includes(word) ? 1 : 0),
+                                                    0
+                                                );
+                                            return getMatchCount(b) - getMatchCount(a); // Higher matches first
+                                        }).map((suggestion, index) => (
+                                            <li
+                                                key={index}
+                                                className="list-group-item list-group-item-action"
+                                                onClick={() => {
+                                                    handleSelectSuggestion(suggestion.question);
+                                                }}
+                                                style={{
+                                                    cursor: "pointer",
+                                                    padding: "10px",
+                                                }}
+                                            >
+                                                {suggestion.question}
+                                            </li>
+                                        ))}
+                                </ul>
+                            )}
 
                         <button
                             type="submit"
                             className="btn btn-primary mt-2"
                             disabled={inputs.length >= 5}
+                            style={{background:"#14213D"}}
                         >
-                            Add More
+                            {inputs.length>0 ? 'Add More' : 'Add Questions'}
                         </button>
 
                         {/* questions suggestions */}
                         {suggestionQuestions.length > 0 && (
                             <div className="container text-center mt-4">
-                                <h3>Suggested Questions</h3>
+                                <h3 style={{ color: "#808080" }}>Suggested Questions</h3>
                                 <div className="d-flex flex-wrap justify-content-center gap-3 mt-3">
-                                    {suggestionQuestions.slice(0,4).map((item, index) => (
+                                    {shuffledSuggestions.map((item, index) => (
                                         <div
                                             key={index}
                                             className="bg-light rounded p-1 shadow-sm d-flex align-items-center justify-content-center"
@@ -199,7 +263,7 @@ const Generator = () => {
                 <div className="col-12 col-md-4">
                 <form onSubmit={handleSubmit}>
                     <div className="card shadow-lg">
-                        <div className="card-header bg-primary text-white text-center">
+                        <div className="card-header text-white text-center" style={{background:"#14213D"}}>
                             <h4>Select Date Range</h4>
                         </div>
                         <div className="card-body p-4">
@@ -213,7 +277,6 @@ const Generator = () => {
                                         value={dateFrom}
                                         onChange={(e) => setDateFrom(e.target.value)}
                                         className="form-control"
-                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -226,7 +289,6 @@ const Generator = () => {
                                         value={dateTo}
                                         onChange={(e) => setDateTo(e.target.value)}
                                         className="form-control"
-                                        required
                                     />
                                 </div>
                         </div>
@@ -235,8 +297,9 @@ const Generator = () => {
                 <button
                     onSubmit={handleSubmit}
                     type="submit"
-                    className="btn btn-primary w-75 d-flex align-items-center justify-content-center mt-4"
+                    className="btn w-75 d-flex align-items-center justify-content-center mt-4"
                     disabled={loading}
+                    style={{fontSize: "1.2em", fontWeight: "bold", background:"#14213D", color:"white"}}
                 >
                     {loading ? (
                         <>
@@ -248,7 +311,7 @@ const Generator = () => {
                             Generating...
                         </>
                     ) : (
-                        "Submit"
+                        "Generate"
                     )}
                 </button>
                 </center>
