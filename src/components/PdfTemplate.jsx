@@ -112,82 +112,129 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import axios from "axios";
 import DownloadButton from "./ButtonComponents/DownloadButton";
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 const PdfTemplate = ({ data }) => {
   const [pdfUrl, setPdfUrl] = useState("");
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saveTitle, setSaveTitle] = useState("");
   const [saveDescription, setSaveDescription] = useState("");
+  const [plotString, setPlotString] = useState("");
 
   // 🚀 Generate PDF and Create Blob URL
   const generatePDFPreview = useMemo(() => {
-    return () => {
+    return async () => {
       try {
         if (!data || data.length === 0) {
           console.warn("No data available for PDF generation.");
           return;
         }
-
+  
         const doc = new jsPDF();
         let yOffset = 20;
-
-        data.forEach((item) => {
-          if (!item || !item.data) {
+  
+        for (const item of data) {
+          if (!item) {
             console.warn("Skipping invalid data item:", item);
-            return;
+            continue;
           }
-
+  
           doc.setFontSize(14);
           doc.text(` ${item.title || "No Title"}`, 14, yOffset);
           yOffset += 10;
-
-          try {
-            const tableData = JSON.parse(item.data);
-            if (!Array.isArray(tableData)) {
-              console.warn("Invalid table data format, skipping.");
-              return;
-            }
-
-            const columns = Object.keys(tableData[0]).map((key) => ({
-              title: key,
-              dataKey: key,
-            }));
-
-            doc.autoTable({
-              startY: yOffset,
-              columns,
-              body: tableData,
-              styles: { fontSize: 10 },
+  
+          if (item.visualization_required === "Yes" && item.vis_object && item.vis_object.length > 0) {
+            console.log("📊 Visualization Required for this item");
+            const vis = item.vis_object[0];
+            const chartType = vis.type || "bar";
+            const chartLabels = vis.labels || [];
+            const chartData = vis.data || [];
+  
+            // Create a Chart.js visualization
+            const canvas = document.createElement('canvas');
+            canvas.width = 500;
+            canvas.height = 300;
+            const ctx = canvas.getContext('2d');
+  
+            new Chart(ctx, {
+              type: chartType,
+              data: {
+                labels: chartLabels,
+                datasets: [{
+                  label: item.title || "Visualization",
+                  data: chartData,
+                  backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 1,
+                }]
+              },
+              options: {
+                responsive: false,
+                maintainAspectRatio: false,
+              }
             });
-
-            yOffset = doc.lastAutoTable.finalY + 10;
-          } catch (parseError) {
-            console.warn("Error parsing table data:", parseError);
+  
+            // Convert the canvas to base64 image and embed in PDF
+            setTimeout(() => {
+              const chartImage = canvas.toDataURL('image/png');
+              setPlotString(chartImage);
+              console.log(chartImage);
+              console.log(typeof(chartImage));
+              doc.addImage(chartImage, 'PNG', 14, yOffset, 180, 100);
+              yOffset += 110;
+            }, 500);
+  
+          } else if (item.data) {
+            try {
+              const tableData = JSON.parse(item.data);
+              if (!Array.isArray(tableData)) {
+                console.warn("Invalid table data format, skipping.");
+                continue;
+              }
+  
+              const columns = Object.keys(tableData[0]).map((key) => ({
+                title: key,
+                dataKey: key,
+              }));
+  
+              doc.autoTable({
+                startY: yOffset,
+                columns,
+                body: tableData,
+                styles: { fontSize: 10 },
+              });
+  
+              yOffset = doc.lastAutoTable.finalY + 10;
+            } catch (parseError) {
+              console.warn("Error parsing table data:", parseError);
+            }
           }
-
+  
           const pageWidth = doc.internal.pageSize.getWidth() - 28;
           doc.setFontSize(12);
           const summaryText = `Summary: ${item.summary || "No Summary"}`.replace(/\s+/g, " ");
           const summaryLines = doc.splitTextToSize(summaryText, pageWidth);
-
+  
           summaryLines.forEach((line) => {
             doc.text(line, 14, yOffset);
             yOffset += 10;
           });
-
+  
           if (yOffset > doc.internal.pageSize.getHeight() - 20) {
             doc.addPage();
             yOffset = 20;
           }
-        });
-
-        // 📝 Generate PDF Blob and URL
+        }
+  
+        // Generate PDF Blob and URL
         const pdfBlob = doc.output("blob");
         const pdfUrl = URL.createObjectURL(pdfBlob);
-
+  
         setPdfUrl((prevUrl) => {
           if (prevUrl) {
-            URL.revokeObjectURL(prevUrl); // Clean up the old URL
+            URL.revokeObjectURL(prevUrl); // Clean up old URL
           }
           return pdfUrl;
         });
@@ -251,7 +298,13 @@ const PdfTemplate = ({ data }) => {
     }
   };
 
-  return (
+  return (<>
+    <div className="container">
+      {plotString ? (
+          <img src={plotString} alt="chartImage" />
+      ) : (<></>)}
+
+    </div>
     <div>
       {/* PDF Preview */}
       {pdfUrl ? (
@@ -341,7 +394,7 @@ const PdfTemplate = ({ data }) => {
         </div>
       )}
     </div>
-  );
+    </>);
 };
 
 export default PdfTemplate;
