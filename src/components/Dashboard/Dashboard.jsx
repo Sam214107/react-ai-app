@@ -271,7 +271,7 @@ const Dashboard = () => {
       <Navbar toggleSidebar={toggleSidebar} />
 
       {/* Dashboard Layout */}
-      <div className="d-flex" style={{ paddingTop: "56px" }}>
+      <div className="d-flex" style={{ paddingTop: "56px",overflow: "hidden" }}>
         {/* Sidebar */}
         {isSidebarOpen && (
           <div
@@ -305,7 +305,11 @@ const Dashboard = () => {
         )}
 
         {/* Main Content */}
-        <div style={{ marginLeft: isSidebarOpen ? "250px" : "0", padding: "20px", width: "100%" }}>
+        <div style={{ marginLeft: isSidebarOpen ? "250px" : "0", padding: "20px", 
+          width: isSidebarOpen ? "calc(100% - 250px)" : "100%",
+          height: "100%",
+          overflowY: "auto",
+        }}>
           {renderComponent()}
         </div>
       </div>
