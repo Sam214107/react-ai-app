@@ -73,27 +73,12 @@ const Navbar = ({ toggleSidebar }) => {
     </svg>
   </button>
 
-        {/* Centered Navbar Content */}
-        <div className="d-flex justify-content-center align-items-center flex-grow-1">
-          {/* <ul className="navbar-nav d-flex flex-row align-items-center">
-            <li className="nav-item mx-3">
-              <a className="nav-link fs-6 text-light" href="https://console.groq.com/docs/overview">
-                Groq
-              </a>
-            </li>
-          </ul> */}
+    
 
           <div className="navbar-brand fw-bold fs-4 mx-3 fs-5 text-white text-center">
             Report AI
           </div>
 
-          {/* <ul className="navbar-nav d-flex flex-row align-items-center">
-            <li className="nav-item mx-3">
-              <a className="nav-link fs-6 text-light" href="#">
-                Llama 3.1
-              </a>
-            </li>
-          </ul> */}
         </div>
          {/* Placeholder for right alignment (optional) */}
          <div style={{ width: "48px" }}></div>
