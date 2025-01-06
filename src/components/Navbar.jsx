@@ -72,9 +72,9 @@ const Navbar = ({ toggleSidebar }) => {
             Report AI
           </div>
 
-          <ul className="navbar-nav d-flex flex-row align-items-center">
-            <li className="nav-item mx-3">
-              <a className="nav-link fs-6 text-light" href="#">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <a className="nav-link fs-6 text-primary" href="https://ai.meta.com/blog/meta-llama-3/">
                 Llama 3.1
               </a>
             </li>
