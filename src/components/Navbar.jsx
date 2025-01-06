@@ -73,12 +73,11 @@ const Navbar = ({ toggleSidebar }) => {
     </svg>
   </button>
 
-    
-
+     {/* Centered Navbar Content */}
+     <div className="d-flex justify-content-center align-items-center flex-grow-1">
           <div className="navbar-brand fw-bold fs-4 mx-3 fs-5 text-white text-center">
             Report AI
           </div>
-
         </div>
          {/* Placeholder for right alignment (optional) */}
          <div style={{ width: "48px" }}></div>
