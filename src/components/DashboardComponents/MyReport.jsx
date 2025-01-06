@@ -6,58 +6,71 @@ const MyReport = () => {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(false); 
     const [error, setError] = useState(null); // Stores error messages
+    
+    const fetchReports = async () => {
+        setLoading(true);
 
-    useEffect(() => {
-        const fetchReports = async () => {
-            setLoading(true);
-
-            try {
-                // Get UserID from localStorage
-                const UserId = localStorage.getItem("UserId");
-                
-                console.log(typeof UserId);
-                console.log(UserId);
-                const userObject =  {
-                    UserID : Number(UserId) 
-                }
-
-                // Send GET request to the backend API
-                const response = await axios.post("http://localhost:8000/get_reports",userObject);
-
-                // Handle response
-                if (response.status === 200 && response.data.isSuccess) {
-                    setReports(response.data.data); // Set the reports data
-                } else {
-                    setError(response.data.message || "Failed to retrieve reports.");
-                }
-            } catch (err) {
-                console.error("Error fetching reports:", err);
-                setError("An unexpected error occurred while fetching reports.");
-            } finally {
-                setLoading(false);
+        try {
+            const UserId = localStorage.getItem("UserId");
+            
+            console.log(typeof UserId);
+            console.log(UserId);
+            const userObject =  {
+                UserID : Number(UserId) 
             }
-        };
 
+            const response = await axios.post("http://localhost:8000/get_reports",userObject);
+
+            // Handle response
+            if (response.status === 200 && response.data.isSuccess) {
+                setReports(response.data.data); 
+            } else {
+                setError(response.data.message || "Failed to retrieve reports.");
+            }
+        } catch (err) {
+            console.error("Error fetching reports:", err);
+            setError("An unexpected error occurred while fetching reports.");
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
         fetchReports();
     }, []);
 
     const handleDeleteReport = async (reportId) => {
-        try {
-            const response = await axios.post("http://localhost:8000/delete_report", { ReportID: reportId });
+        console.log("Report ID to delete:", reportId);
+        if (!reportId) {
+            console.error("No report ID provided!");
+            return;
+        }
 
-            if (response.status === 200 && response.data.isSuccess) {
-                setReports(reports.filter((report) => report.id !== reportId));
-                alert("Report deleted successfully.");
+        if (!window.confirm("Are you sure you want to delete this report?")) {
+            return; 
+        }
+
+        try {
+            setLoading(true);
+            const deleteObject = {
+                ReportID: reportId
+            }
+            const response = await axios.post("http://localhost:8000/delete_report", deleteObject);
+
+            if (response.status === 200) {
+                alert(response.data.message || "Report deleted successfully.");
+
+                await fetchReports();
             } else {
-                alert(response.data.message || "Failed to delete report.");
+                setError(response.data.detail || "Failed to delete the report.");
             }
         } catch (err) {
             console.error("Error deleting report:", err);
-            alert("An unexpected error occurred while deleting the report.");
+            setError("An unexpected error occurred while deleting the report.");
+        } finally {
+            setLoading(false);
         }
     };
 
-    // Function to handle Base64 to PDF preview
     const handleViewReport = (base64String) => {
         try {
             if (!base64String.startsWith("data:application/pdf;base64,")) {
@@ -101,11 +114,11 @@ const MyReport = () => {
             <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                 {reports.map((report) => (
                     <PdfCard
-                        key={report.id}
+                        key={report.ReportID}
                         title={report.Title}
                         description={report.Description}
                         onViewReport={() => handleViewReport(report.ReportData)}
-                        onDeleteReport={() => handleDeleteReport(report.id)}
+                        onDeleteReport={() => handleDeleteReport(report.ReportID)} 
                     />
                 ))}
             </div>

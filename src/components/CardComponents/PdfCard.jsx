@@ -2,23 +2,19 @@ import React from 'react';
 import { FaTrash } from 'react-icons/fa';
 import styled from 'styled-components';
 
-const PdfCard = ({ title, description, onViewReport, onDeleteReport }) => {
+const PdfCard = ({title, description, onViewReport, onDeleteReport }) => {
   return (
     <StyledWrapper>
       <div className="card">
         <div className="img">
           <div className="delete">
-            {/* <svg className="svg" width={683} height={683} viewBox="0 0 683 683" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* SVG content omitted for brevity 
+            <button
+              type="button"
+              className="btn btn-danger btn-sm"
+              onClick={onDeleteReport}
+            >
               <FaTrash />
-            </svg> */}
-                      <button
-                          type="button"
-                          className="btn btn-danger btn-sm"
-                          onClick={onDeleteReport}
-                      >
-                          <FaTrash />
-                      </button>
+            </button>
           </div>
         </div>
         <div className="text">
@@ -50,7 +46,7 @@ const StyledWrapper = styled.div`
     height: 50%;
     border-top-left-radius: 30px;
     border-top-right-radius: 30px;
-    background: linear-gradient(#e66465, #14213D);
+    background: linear-gradient(#e66465,rgb(15, 28, 54));
     display: flex;
     align-items: top;
     justify-content: right;
