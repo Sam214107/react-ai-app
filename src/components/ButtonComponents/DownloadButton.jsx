@@ -29,6 +29,7 @@ const StyledWrapper = styled.div`
     background: #14213D;
     border-radius: 30px;
     overflow: hidden;
+    margin-right: 5px;
   }
 
   .button-content {

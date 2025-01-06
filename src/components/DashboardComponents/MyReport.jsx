@@ -16,7 +16,7 @@
 //                 alert('User not logged in.');
 //                 return;
 //                 }
-//                 const response = await axios.get("http://127.0.0.1:8000/get_reports/", {
+//                 const response = await axios.get("http://localhost:8000/get_reports/", {
 //                     params: {userId:UserId},
 //                 });
 
@@ -99,7 +99,7 @@ const MyReport = () => {
                 }
 
                 // Send GET request to the backend API
-                const response = await axios.post("http://127.0.0.1:8000/get_reports",userObject);
+                const response = await axios.post("http://localhost:8000/get_reports",userObject);
 
                 // Handle response
                 if (response.status === 200 && response.data.isSuccess) {

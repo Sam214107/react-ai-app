@@ -15,29 +15,29 @@ const Generator = () => {
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
     const [isDisplay, setIsDisplay] = useState("");
     const [shuffledSuggestions, setShuffledSuggestions] = useState([]);
-    useEffect(() => {
-        // Function to shuffle and pick 4 random suggestions
-        const shuffleSuggestions = () => {
-            const shuffled = [...suggestionQuestions]
-                .sort(() => Math.random() - 0.5)
-                .slice(0, 4);
-            setShuffledSuggestions(shuffled);
-        };
+    // useEffect(() => {
+    //     // Function to shuffle and pick 4 random suggestions
+    //     const shuffleSuggestions = () => {
+    //         const shuffled = [...suggestionQuestions]
+    //             .sort(() => Math.random() - 0.5)
+    //             .slice(0, 4);
+    //         setShuffledSuggestions(shuffled);
+    //     };
     
-        // Initial shuffle
-        shuffleSuggestions();
+    //     // Initial shuffle
+    //     shuffleSuggestions();
     
-        // Set interval for periodic shuffle (e.g., every 5 seconds)
-        const intervalId = setInterval(shuffleSuggestions, 5000);
+    //     // Set interval for periodic shuffle (e.g., every 5 seconds)
+    //     const intervalId = setInterval(shuffleSuggestions, 5000);
     
-        // Cleanup interval on unmount
-        return () => clearInterval(intervalId);
-    }, [suggestionQuestions]);
+    //     // Cleanup interval on unmount
+    //     return () => clearInterval(intervalId);
+    // }, [suggestionQuestions]);
 
     useEffect(() => {
         const fetchSuggestions = async () => {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/suggest_questions/");
+                const response = await axios.get("http://localhost:8000/suggest_questions/");
                 setSuggestionQuestions(response.data.data);
             } catch (err) {
                 console.error("Error fetching suggestions:", err);
@@ -97,12 +97,16 @@ const Generator = () => {
 
     // Handle selecting a suggestion
     const handleSelectSuggestion = (suggestion) => {
-        console.log("Hi");
+        if (inputs.length < 5) {
+            setInputs([...inputs, suggestion]);
+            setInputValue(""); // Clear the input field
+            setFilteredSuggestions([]); // Clear filtered suggestions
+        } else {
+            alert("You can only input up to five times.");
+        }
         setIsDisplay("dropdown");
-        setInputValue(suggestion);
-      
-        setFilteredSuggestions([]);
     };
+    
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -111,7 +115,7 @@ const Generator = () => {
         setResponseData(null);
 
         try {
-            const response = await axios.post("http://127.0.0.1:8000/generate_report/", {
+            const response = await axios.post("http://localhost:8000/generate_report/", {
                 start_date: dateFrom,
                 end_date: dateTo,
                 qlist: inputs,
@@ -133,12 +137,12 @@ const Generator = () => {
     return (
         <div className="container ">
             <h1>Generate Report</h1>
-            <hr
+            {/* <hr
                 style={{ width: "100%", marginBottom: "16px", border: "1px solid gray" }}
-            />
-            <div className="row">
+            /> */}
+            <div className="row" style={{overflow: "hidden",flexWrap: "nowrap",border:' solid 2px grey',borderRadius: "10px", padding: "5px", marginBottom: "5px"}}>
                 {/* Input questions */}
-                <div className="col-12 col-md-8">
+                <div className="col-12 col-md-8" style={{overflow:"hidden",position:"relative"}}>
                 <div className="input-container container ">
                     <div className="input-list mb-3">
                         {inputs.map((input, index) => (
@@ -190,6 +194,8 @@ const Generator = () => {
                                         zIndex: 10,
                                         marginTop: "5px", // Space between input and dropdown
                                         padding: "0", // Remove extra padding
+                                        left:"0",
+                                        width:"100%",
                                     }}
                                 >
                                     {filteredSuggestions.filter((suggestion) => {
@@ -240,6 +246,33 @@ const Generator = () => {
 
                         {/* questions suggestions */}
                         {suggestionQuestions.length > 0 && (
+                                <div className="container text-center mt-4">
+                                    <h3 style={{ color: "#808080" }}>Suggested Questions</h3>
+                                    <div
+                                        className="d-flex flex-nowrap overflow-auto justify-content-start gap-3 mt-3"
+                                        style={{
+                                            width: "100%", // Make the container full-width to allow overflow
+                                            maxWidth: "100%", // Ensure no max-width restriction
+                                        }}
+                                    >
+                                        {suggestionQuestions.map((item, index) => (
+                                            <div
+                                                key={index}
+                                                className="bg-light rounded p-1 shadow-sm d-flex align-items-center justify-content-center"
+                                                style={{
+                                                    minWidth: "200px", // Width of each suggestion card
+                                                    maxWidth: "300px", // Keep fixed width for each suggestion
+                                                    cursor: "pointer",
+                                                }}
+                                                onClick={() => handleSelectSuggestion(item.question)} // Add the selected question
+                                            >
+                                                {item.question}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            {/* {suggestionQuestions.length > 0 && (
                             <div className="container text-center mt-4">
                                 <h3 style={{ color: "#808080" }}>Suggested Questions</h3>
                                 <div className="d-flex flex-wrap justify-content-center gap-3 mt-3">
@@ -247,14 +280,15 @@ const Generator = () => {
                                         <div
                                             key={index}
                                             className="bg-light rounded p-1 shadow-sm d-flex align-items-center justify-content-center"
-                                            style={{ minWidth: "200px", maxWidth: "300px" }}
+                                            onClick={() => handleSelectSuggestion(item.question)}
+                                            style={{ minWidth: "200px", maxWidth: "300px", cursor: "pointer",}}
                                         >
                                             {item.question}
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                        )}
+                            )} */}
                     </form>
                 </div>
                 </div>
@@ -318,8 +352,9 @@ const Generator = () => {
                 </form>
                 </div>
                 {/* Error handling */}
-                {error && <p style={{ color: "red" }}>{error}</p>}
-
+                {error && <p style={{ color: "red" }}>{error}</p>}  
+            </div>
+            <div className="pdfcontainer">
                 {/* Show PDF Template after successful data retrieval */}
                 {responseData && <PdfTemplate data={responseData} />}
             </div>

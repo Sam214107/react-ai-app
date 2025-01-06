@@ -23,7 +23,7 @@
 //   const handleLogout = async () => {
 //     try {
 //       const response = await axios.post(
-//         "http://127.0.0.1:8000/logout",
+//         "http://localhost:8000/logout",
 //         {SessionId : String(localStorage.getItem("SessionId"))},
         
 //       );
@@ -141,7 +141,7 @@
 
 //   const handleLogout = async () => {
 //     try {
-//       const response = await axios.post("http://127.0.0.1:8000/logout", {
+//       const response = await axios.post("http://localhost:8000/logout", {
 //         SessionId: String(localStorage.getItem("SessionId")),
 //       });
 //       if (response.status === 200 && response.data.isSucess) {
@@ -231,7 +231,7 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/logout", {
+      const response = await axios.post("http://localhost:8000/logout", {
         SessionId: String(localStorage.getItem("SessionId")),
       });
       if (response.status === 200 && response.data.isSucess) {
@@ -271,7 +271,7 @@ const Dashboard = () => {
       <Navbar toggleSidebar={toggleSidebar} />
 
       {/* Dashboard Layout */}
-      <div className="d-flex" style={{ paddingTop: "56px" }}>
+      <div className="d-flex" style={{ paddingTop: "56px",overflow: "hidden" }}>
         {/* Sidebar */}
         {isSidebarOpen && (
           <div
@@ -287,25 +287,29 @@ const Dashboard = () => {
             }}
           >
             <div>
-              <h3 className="text-left">Dashboard</h3>
-              <div className="mb-3">
+              <h3 className="text-center">Dashboard</h3>
+              <div className="mb-3 text-center">
                 <DashboardButtons label="About" onClick={() => setActiveComponent("about")} />
               </div>
-              <div className="mb-3">
+              <div className="mb-3 text-center">
                 <DashboardButtons label="Generate" onClick={() => setActiveComponent("generator")} />
               </div>
-              <div className="mb-5">
+              <div className="mb-5 text-center">
                 <DashboardButtons label="My Reports" onClick={() => setActiveComponent("myreport")} />
               </div>
             </div>
-            <div className="mb-5">
+            <div className="mb-5 text-center">
               <DashboardButtons label="Logout" onClick={handleLogout} />
             </div>
           </div>
         )}
 
         {/* Main Content */}
-        <div style={{ marginLeft: isSidebarOpen ? "250px" : "0", padding: "20px", width: "100%" }}>
+        <div style={{ marginLeft: isSidebarOpen ? "250px" : "0", padding: "20px", 
+          width: isSidebarOpen ? "calc(100% - 250px)" : "100%",
+          height: "100%",
+          overflowY: "auto",
+        }}>
           {renderComponent()}
         </div>
       </div>
