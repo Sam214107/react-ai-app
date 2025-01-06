@@ -311,6 +311,7 @@ const Generator = () => {
                                         value={dateFrom}
                                         onChange={(e) => setDateFrom(e.target.value)}
                                         className="form-control"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -323,6 +324,7 @@ const Generator = () => {
                                         value={dateTo}
                                         onChange={(e) => setDateTo(e.target.value)}
                                         className="form-control"
+                                        required
                                     />
                                 </div>
                         </div>

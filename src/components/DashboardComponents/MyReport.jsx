@@ -83,42 +83,71 @@ const MyReport = () => {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(false); 
     const [error, setError] = useState(null); // Stores error messages
+    
+    const fetchReports = async () => {
+        setLoading(true);
 
-    useEffect(() => {
-        const fetchReports = async () => {
-            setLoading(true);
-
-            try {
-                // Get UserID from localStorage
-                const UserId = localStorage.getItem("UserId");
-                
-                console.log(typeof UserId);
-                console.log(UserId);
-                const userObject =  {
-                    UserID : Number(UserId) 
-                }
-
-                // Send GET request to the backend API
-                const response = await axios.post("http://localhost:8000/get_reports",userObject);
-
-                // Handle response
-                if (response.status === 200 && response.data.isSuccess) {
-                    setReports(response.data.data); // Set the reports data
-                } else {
-                    setError(response.data.message || "Failed to retrieve reports.");
-                }
-            } catch (err) {
-                console.error("Error fetching reports:", err);
-                setError("An unexpected error occurred while fetching reports.");
-            } finally {
-                setLoading(false);
+        try {
+            const UserId = localStorage.getItem("UserId");
+            
+            console.log(typeof UserId);
+            console.log(UserId);
+            const userObject =  {
+                UserID : Number(UserId) 
             }
-        };
 
+            const response = await axios.post("http://localhost:8000/get_reports",userObject);
+
+            // Handle response
+            if (response.status === 200 && response.data.isSuccess) {
+                setReports(response.data.data); 
+            } else {
+                setError(response.data.message || "Failed to retrieve reports.");
+            }
+        } catch (err) {
+            console.error("Error fetching reports:", err);
+            setError("An unexpected error occurred while fetching reports.");
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect(() => {
         fetchReports();
     }, []);
 
-    // Function to handle Base64 to PDF preview
+    const handleDeleteReport = async (reportId) => {
+        console.log("Report ID to delete:", reportId);
+        if (!reportId) {
+            console.error("No report ID provided!");
+            return;
+        }
+
+        if (!window.confirm("Are you sure you want to delete this report?")) {
+            return; 
+        }
+
+        try {
+            setLoading(true);
+            const deleteObject = {
+                ReportID: reportId
+            }
+            const response = await axios.post("http://localhost:8000/delete_report", deleteObject);
+
+            if (response.status === 200) {
+                alert(response.data.message || "Report deleted successfully.");
+
+                await fetchReports();
+            } else {
+                setError(response.data.detail || "Failed to delete the report.");
+            }
+        } catch (err) {
+            console.error("Error deleting report:", err);
+            setError("An unexpected error occurred while deleting the report.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleViewReport = (base64String) => {
         try {
             if (!base64String.startsWith("data:application/pdf;base64,")) {
@@ -159,34 +188,17 @@ const MyReport = () => {
             )}
 
             {/* Reports List */}
-            {/* <div className="row">
-                {reports.map((report, index) => (
-                    <div key={index} className="col-md-4 mb-4">
-                        <div className="card shadow-sm">
-                            <div className="card-body">
-                                <h5 className="card-title">{report.Title}</h5>
-                                <p className="card-text">{report.Description}</p>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={() => handleViewReport(report.ReportData)} // Pass Base64 string to the handler
-                                >
-                                    View Report
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div> */}
             <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-      {reports.map((report) => (
-        <PdfCard
-          key={report.id}
-          title={report.Title}
-          description={report.Description}
-          onViewReport={() => handleViewReport(report.ReportData)}
-        />
-      ))}
-    </div>
+                {reports.map((report) => (
+                    <PdfCard
+                        key={report.ReportID}
+                        title={report.Title}
+                        description={report.Description}
+                        onViewReport={() => handleViewReport(report.ReportData)}
+                        onDeleteReport={() => handleDeleteReport(report.ReportID)} 
+                    />
+                ))}
+            </div>
         </div>
     );
 };

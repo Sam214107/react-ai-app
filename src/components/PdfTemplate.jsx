@@ -586,7 +586,7 @@ const PdfTemplate = ({ data }) => {
         <div
           id="pdf-content"
           ref={pdfContentRef}
-          style={{ padding: "30px 50px", border:' solid 2px grey' , fontFamily: "Arial", maxWidth: "800px", maxHeight: "1000px",borderRadius: "10px",  overflow: "auto"}}
+          style={{ padding: "30px 50px", border:' solid 2px grey' , fontFamily: "Arial", maxWidth: "800px",borderRadius: "10px",  overflow: "auto"}}
         >
           {data && data.length > 0 ? (
             data.map((item, index) => (

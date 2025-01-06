@@ -15,6 +15,14 @@ const ChartRenderer = ({ chartId, type, labels, data, title }) => {
       chartInstance.current.destroy();
     }
 
+    const backgroundColors = data.map(() =>
+      `rgba(${Math.floor(Math.random() * 255)}, 
+            ${Math.floor(Math.random() * 255)}, 
+            ${Math.floor(Math.random() * 255)}, 0.6)`
+    );
+
+    const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
+
     // Create new chart instance
     chartInstance.current = new Chart(ctx, {
       type,
@@ -24,8 +32,8 @@ const ChartRenderer = ({ chartId, type, labels, data, title }) => {
           {
             label: title,
             data,
-            backgroundColor: "rgba(75, 192, 192, 0.6)",
-            borderColor: "rgba(75, 192, 192, 1)",
+            backgroundColor: backgroundColors,
+            borderColor: borderColors,
             borderWidth: 1,
           },
         ],
