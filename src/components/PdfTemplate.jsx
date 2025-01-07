@@ -291,200 +291,6 @@
 
 // export default PdfTemplate;
 
-// import React, { useState, useEffect } from "react";
-// import ChartRenderer from "../components/ChartRenderer"; // Import the ChartRenderer component
-
-// const PdfTemplate = ({ data }) => {
-//   const [showSaveModal, setShowSaveModal] = useState(false);
-//   const [saveTitle, setSaveTitle] = useState("");
-//   const [saveDescription, setSaveDescription] = useState("");
-
-//   // Save Report Handler
-//   const handleSave = async () => {
-//     try {
-//       const UserId = localStorage.getItem("UserId");
-//       if (!UserId) {
-//         alert("User is not logged in!");
-//         return;
-//       }
-
-//       const reportData = {
-//         UserID: UserId,
-//         Title: saveTitle,
-//         Description: saveDescription,
-//       };
-
-//       const response = await fetch("http://127.0.0.1:8000/save_report/", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         credentials: "include",
-//         body: JSON.stringify(reportData),
-//       });
-
-//       const result = await response.json();
-
-//       if (response.status === 200 && result.isSucess) {
-//         alert("Data saved successfully!");
-//         setShowSaveModal(false);
-//       } else {
-//         alert(result.message || "Failed to save report.");
-//       }
-//     } catch (err) {
-//       console.error("Error saving data:", err);
-//       alert("An error occurred while saving the data. Please try again.");
-//     }
-//   };
-
-//   // Print PDF Handler
-//   const printPDF = () => {
-//     window.print();
-//   };
-
-//   return (
-//     <>
-//       <div className="container">
-//         <div id="pdf-content" style={{ padding: "20px", fontFamily: "Arial" }}>
-//           {data && data.length > 0 ? (
-//             data.map((item, index) => (
-//               <div key={index} style={{ marginBottom: "30px" }}>
-//                 <h3>{item.title || "No Title"}</h3>
-//                 {item.visualization_required?.toLowerCase() === "yes" && item.vis_object && item.vis_object.length > 0 ? (
-//                   <ChartRenderer
-//                     chartId={`chart-${index}`}
-//                     type={item.vis_object[0].type || "bar"}
-//                     labels={item.vis_object[0].labels || []}
-//                     data={item.vis_object[0].data || []}
-//                     title={item.title || "Visualization"}
-//                   />
-//                 ) : item.data ? (
-//                   <table
-//                     border="1"
-//                     style={{
-//                       width: "100%",
-//                       borderCollapse: "collapse",
-//                       marginTop: "10px",
-//                     }}
-//                   >
-//                     <thead>
-//                       <tr>
-//                         {Object.keys(JSON.parse(item.data)[0]).map((key) => (
-//                           <th key={key} style={{ padding: "5px", textAlign: "left" }}>
-//                             {key}
-//                           </th>
-//                         ))}
-//                       </tr>
-//                     </thead>
-//                     <tbody>
-//                       {JSON.parse(item.data).map((row, rowIndex) => (
-//                         <tr key={rowIndex}>
-//                           {Object.values(row).map((value, colIndex) => (
-//                             <td key={colIndex} style={{ padding: "5px" }}>
-//                               {value}
-//                             </td>
-//                           ))}
-//                         </tr>
-//                       ))}
-//                     </tbody>
-//                   </table>
-//                 ) : (
-//                   <p>No data or visualization available.</p>
-//                 )}
-//                 <p><strong>Summary:</strong> {item.summary || "No Summary"}</p>
-//               </div>
-//             ))
-//           ) : (
-//             <p>No data available.</p>
-//           )}
-//         </div>
-
-//         {/* Print and Save Buttons */}
-//         <div className="text-center mt-4">
-//           <button
-//             className="btn btn-primary"
-//             onClick={printPDF}
-//             style={{ marginRight: "10px" }}
-//           >
-//             Print PDF
-//           </button>
-//           <button
-//             className="btn btn-success"
-//             onClick={() => setShowSaveModal(true)}
-//             style={{
-//               height: "45px",
-//               width: "120px",
-//               cursor: "pointer",
-//               backgroundColor: "#14213D",
-//               border: "none",
-//               borderRadius: "30px",
-//               overflow: "hidden",
-//             }}
-//           >
-//             Save Report
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* Save Report Modal */}
-//       {showSaveModal && (
-//         <div
-//           className="modal-backdrop"
-//           style={{
-//             position: "fixed",
-//             top: 0,
-//             left: 0,
-//             width: "100%",
-//             height: "100%",
-//             backgroundColor: "rgba(0, 0, 0, 0.5)",
-//             display: "flex",
-//             alignItems: "center",
-//             justifyContent: "center",
-//             zIndex: 1050,
-//           }}
-//         >
-//           <div className="card p-4 shadow-lg w-50">
-//             <h4 className="text-center mb-4">Save Report</h4>
-//             <div className="form-group mb-3">
-//               <label htmlFor="saveTitle">Title</label>
-//               <input
-//                 type="text"
-//                 id="saveTitle"
-//                 className="form-control"
-//                 value={saveTitle}
-//                 onChange={(e) => setSaveTitle(e.target.value)}
-//               />
-//             </div>
-//             <div className="form-group mb-3">
-//               <label htmlFor="saveDescription">Description</label>
-//               <textarea
-//                 id="saveDescription"
-//                 className="form-control"
-//                 rows="3"
-//                 value={saveDescription}
-//                 onChange={(e) => setSaveDescription(e.target.value)}
-//               ></textarea>
-//             </div>
-//             <div className="text-center">
-//               <button className="btn btn-primary" onClick={handleSave}>
-//                 Save
-//               </button>
-//               <button
-//                 className="btn btn-secondary ms-3"
-//                 onClick={() => setShowSaveModal(false)}
-//               >
-//                 Cancel
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </>
-//   );
-// };
-
-// export default PdfTemplate;
-
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
@@ -498,50 +304,114 @@ const PdfTemplate = ({ data }) => {
   const pdfContentRef = useRef(null);
 
   // Download PDF
+  // const downloadPDF = () => {
+  //   if (!pdfContentRef.current) return;
+  
+  //   const a4Width = 210; // A4 page width in mm
+  //   const a4Height = 297; // A4 page height in mm
+  //   const margin = 10; // Margin in mm
+  //   const headerHeight = 20; // Space reserved for the header
+  //   const footerHeight = 10; // Space reserved for the footer
+  //   const pageContentHeight = a4Height - headerHeight - footerHeight - 2 * margin; // Usable height for content
+  //   const pdf = new jsPDF("p", "mm", "a4");
+  
+  //   const headerText = "Report"; // Customize your header text
+  //   const footerText = "Generated By ReportAI, Page "; // Footer text
+  
+  //   const contentElements = pdfContentRef.current.children; // Get all child elements
+  //   let currentHeight = margin + headerHeight; // Start below the header
+  //   let currentPage = 1; // Page counter
+  
+  //   Array.from(contentElements).forEach((element, index) => {
+  //     // Render the element into a canvas
+  //     html2canvas(element, { scale: 2, useCORS: true }).then((canvas) => {
+  //       const imgData = canvas.toDataURL("image/png");
+  //       const imgWidth = a4Width - 2 * margin;
+  //       const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+  //       // If the element doesn't fit on the current page, add a new page
+  //       if (currentHeight + imgHeight > margin + pageContentHeight) {
+  //         addFooter(pdf, footerText, currentPage, a4Width, a4Height, margin); // Add footer to the current page
+  //         pdf.addPage(); // Add a new page
+  //         currentHeight = margin; // Reset the height for the new page
+  //         currentPage++; // Increment the page counter
+  //         // addHeader(pdf, headerText, a4Width, margin); // Add header to the new page
+  //       }
+  
+  //       // Add header on the first page only
+  //       if (currentPage === 1 && index === 0) {
+  //         addHeader(pdf, headerText, a4Width, margin); // Add header
+  //         currentHeight = margin + headerHeight;
+  //       }
+  
+  //       // Add the element to the PDF
+  //       pdf.addImage(imgData, "PNG", margin, currentHeight, imgWidth, imgHeight);
+  
+  //       // Update the current height
+  //       currentHeight += imgHeight;
+  
+  //       // Save the PDF after rendering all elements
+  //       if (index === contentElements.length - 1) {
+  //         addFooter(pdf, footerText, currentPage, a4Width, a4Height, margin); // Add footer to the last page
+  //         pdf.save("Report.pdf");
+  //       }
+  //     });
+  //   });
+  // };
+  
+  // // Function to add a header to the page
+  // const addHeader = (pdf, text, pageWidth, margin) => {
+  //   pdf.setFontSize(14); // Set font size
+  //   pdf.setTextColor(40); // Dark gray color
+  //   pdf.text(text, pageWidth / 2, margin + 10, { align: "center" }); // Centered text
+  // };
+  
+  // // Function to add a footer to every page
+  // const addFooter = (pdf, text, pageNumber, pageWidth, pageHeight, margin) => {
+  //   pdf.setFontSize(10); // Set font size
+  //   pdf.setTextColor(100); // Light gray color
+  //   const footerY = pageHeight - margin; // Position footer at the bottom
+  //   pdf.text(`${text} ${pageNumber}`, pageWidth / 2, footerY, { align: "center" }); // Centered text
+  // };
   const downloadPDF = () => {
-  if (!pdfContentRef.current) return;
-
-  const a4Width = 210; // A4 page width in mm
-  const a4Height = 297; // A4 page height in mm
-  const scale = 2; // Improve image quality
-
-  html2canvas(pdfContentRef.current, { scale }).then((canvas) => {
-    const imgData = canvas.toDataURL("image/png");
-
+    if (!pdfContentRef.current) return;
+  
+    const a4Width = 210; // A4 page width in mm
+    const a4Height = 297; // A4 page height in mm
+    const margin = 10; // Margin in mm
+    const pageContentHeight = a4Height - 2 * margin; // Usable page height
     const pdf = new jsPDF("p", "mm", "a4");
-    const imgWidth = a4Width;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    let y = 0; // Y-axis position for the current page
-
-    if (imgHeight <= a4Height) {
-      // If content fits on one page
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-    } else {
-      // Split content into multiple pages
-      while (y < canvas.height) {
-        const canvasPage = document.createElement("canvas");
-        canvasPage.width = canvas.width;
-        canvasPage.height = Math.min(canvas.height - y, (a4Height * canvas.width) / a4Width);
-
-        const ctx = canvasPage.getContext("2d");
-        ctx.drawImage(canvas, 0, -y);
-
-        const pageData = canvasPage.toDataURL("image/png");
-        const pageHeight = (canvasPage.height * a4Width) / canvas.width;
-
-        pdf.addImage(pageData, "PNG", 0, 0, a4Width, pageHeight);
-        y += canvasPage.height;
-
-        if (y < canvas.height) {
+  
+    const contentElements = pdfContentRef.current.children; // Get all child elements
+    let currentHeight = 0; // Tracks the current height on the page
+  
+    Array.from(contentElements).forEach((element, index) => {
+      // Render the element into a canvas
+      html2canvas(element, { scale: 2, useCORS: true }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = a4Width - 2 * margin;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+        // If the element doesn't fit on the current page, add a new page
+        if (currentHeight + imgHeight > pageContentHeight) {
           pdf.addPage();
+          currentHeight = 0; // Reset the height for the new page
         }
-      }
-    }
-
-    pdf.save("Report.pdf");
-  });
-};
+  
+        // Add the element to the PDF
+        pdf.addImage(imgData, "PNG", margin, margin + currentHeight, imgWidth, imgHeight);
+  
+        // Update the current height
+        currentHeight += imgHeight;
+  
+        // Save the PDF after rendering all elements
+        if (index === contentElements.length - 1) {
+          pdf.save("Report.pdf");
+        }
+      });
+    });
+  };
+  
   // Save Report Handler
   const handleSave = async () => {
     try {
