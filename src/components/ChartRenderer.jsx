@@ -42,6 +42,43 @@ const ChartRenderer = ({ chartId, type, labels, data, title }) => {
         responsive: false,
         maintainAspectRatio: false,
       },
+      options: {
+        responsive: false,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              font: {
+                size: 14, 
+              },
+            },
+          },
+          tooltip: {
+            bodyFont: {
+              size: 12, 
+            },
+            titleFont: {
+              size: 14, 
+            },
+          },
+        },
+        scales: {
+          x: {
+            ticks: {
+              font: {
+                size: 8, 
+              },
+            },
+          },
+          y: {
+            ticks: {
+              font: {
+                size: 12, 
+              },
+            },
+          },
+        },
+      },
     });
 
     // Cleanup on unmount

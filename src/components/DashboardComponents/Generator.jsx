@@ -14,6 +14,7 @@ const Generator = () => {
     const [suggestionQuestions, setSuggestionQuestions] = useState([]);
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
     const [isDisplay, setIsDisplay] = useState("");
+    const [submittedQuestions, setSubmittedQuestions] = useState([]);
     const [shuffledSuggestions, setShuffledSuggestions] = useState([]);
     // useEffect(() => {
     //     // Function to shuffle and pick 4 random suggestions
@@ -120,6 +121,7 @@ const Generator = () => {
                 end_date: dateTo,
                 qlist: inputs,
             });
+            setSubmittedQuestions(inputs); 
             setInputs([]);
             response.data.status === 200
                 ? setResponseData(response.data.data)
@@ -296,7 +298,7 @@ const Generator = () => {
                 {/* Date Picker Column (col-4) */}
                 <div className="col-12 col-md-4">
                 <form onSubmit={handleSubmit}>
-                    <div className="card shadow-lg">
+                    <div className="card">
                         <div className="card-header text-white text-center" style={{background:"#14213D"}}>
                             <h4>Select Date Range</h4>
                         </div>
@@ -358,7 +360,17 @@ const Generator = () => {
             </div>
             <div className="pdfcontainer">
                 {/* Show PDF Template after successful data retrieval */}
-                {responseData && <PdfTemplate data={responseData} />}
+                {responseData && (
+                <div className="mt-4">
+                    <h3>Questions Used for Report:</h3>
+                    <ul>
+                        {submittedQuestions.map((question, index) => (
+                            <li key={index}>{question}</li>
+                        ))}
+                    </ul>
+                    <PdfTemplate data={responseData} />
+                </div>
+            )}
             </div>
         </div>
     );
