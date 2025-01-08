@@ -38,7 +38,7 @@ const Generator = () => {
     useEffect(() => {
         const fetchSuggestions = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/suggest_questions/");
+                const response = await axios.get("http://localhost:8000/api/report/suggest_questions/");
                 setSuggestionQuestions(response.data.data);
             } catch (err) {
                 console.error("Error fetching suggestions:", err);
@@ -116,7 +116,7 @@ const Generator = () => {
         setResponseData(null);
 
         try {
-            const response = await axios.post("http://localhost:8000/generate_report/", {
+            const response = await axios.post("http://localhost:8000/api/report/generate_report/", {
                 start_date: dateFrom,
                 end_date: dateTo,
                 qlist: inputs,

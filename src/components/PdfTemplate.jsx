@@ -476,7 +476,7 @@ const PdfTemplate = ({ data }) => {
             };
   
             // Send report data to the backend
-            fetch("http://127.0.0.1:8000/save_report/", {
+            fetch("http://127.0.0.1:8000/api/report/save_report/", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

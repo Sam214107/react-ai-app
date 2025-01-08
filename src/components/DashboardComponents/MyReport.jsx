@@ -96,7 +96,7 @@ const MyReport = () => {
                 UserID : Number(UserId) 
             }
 
-            const response = await axios.post("http://localhost:8000/get_reports",userObject);
+            const response = await axios.post("http://localhost:8000/api/report/get_reports",userObject);
 
             // Handle response
             if (response.status === 200 && response.data.isSuccess) {
@@ -131,7 +131,7 @@ const MyReport = () => {
             const deleteObject = {
                 ReportID: reportId
             }
-            const response = await axios.post("http://localhost:8000/delete_report", deleteObject);
+            const response = await axios.post("http://localhost:8000/api/report/delete_report", deleteObject);
 
             if (response.status === 200) {
                 alert(response.data.message || "Report deleted successfully.");

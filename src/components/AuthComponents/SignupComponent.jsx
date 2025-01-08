@@ -29,7 +29,7 @@ const SignupComponent = ({ onClick }) => {
       setError(null);
 
       // Send POST request to backend
-      const response = await axios.post('http://localhost:8000/signup', {
+      const response = await axios.post('http://localhost:8000/api/report/signup', {
         username, // Match the backend field name
         email,    // Match the backend field name
         password, // Match the backend field name
