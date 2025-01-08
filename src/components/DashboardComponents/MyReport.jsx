@@ -71,23 +71,52 @@ const MyReport = () => {
         }
     };
 
+    // const handleViewReport = (base64String) => {
+    //     try {
+    //         if (!base64String.startsWith("data:application/pdf;base64,")) {
+    //             alert("Invalid PDF data format.");
+    //             return;
+    //         }
+
+    //         // Open the Base64 PDF string directly in a new tab
+    //         const pdfWindow = window.open();
+    //         pdfWindow.document.write(
+    //             `<iframe width="100%" height="100%" src="${base64String}"></iframe>`
+    //         );
+    //     } catch (err) {
+    //         console.error("Error while previewing report:", err);
+    //         alert("Failed to preview the report.");
+    //     }
+    // };
     const handleViewReport = (base64String) => {
         try {
-            if (!base64String.startsWith("data:application/pdf;base64,")) {
-                alert("Invalid PDF data format.");
-                return;
-            }
-
-            // Open the Base64 PDF string directly in a new tab
-            const pdfWindow = window.open();
-            pdfWindow.document.write(
-                `<iframe width="100%" height="100%" src="${base64String}"></iframe>`
-            );
+          // Ensure the Base64 string has the correct prefix
+          if (!base64String.startsWith("data:application/pdf;base64,")) {
+            base64String = `data:application/pdf;base64,${base64String}`;
+          }
+      
+          // Decode the Base64 string and convert it to a Blob
+          const byteCharacters = atob(base64String.split(",")[1]);
+          const byteNumbers = Array.from(byteCharacters, (char) => char.charCodeAt(0));
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: "application/pdf" });
+      
+          // Create a Blob URL
+          const pdfUrl = URL.createObjectURL(blob);
+      
+          // Open the Blob URL in a new tab
+          const pdfWindow = window.open();
+          if (pdfWindow) {
+            pdfWindow.location.href = pdfUrl;
+          } else {
+            alert("Failed to open a new tab. Please allow pop-ups in your browser.");
+          }
         } catch (err) {
-            console.error("Error while previewing report:", err);
-            alert("Failed to preview the report.");
+          console.error("Error while previewing report:", err);
+          alert("Failed to preview the report.");
         }
-    };
+      };
+      
 
     return (
         <div className="container mt-4">
